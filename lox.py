@@ -1,6 +1,8 @@
 import sys
 import os
 
+from scanner import Scanner
+
 
 class Lox:
     had_error = False
@@ -15,15 +17,26 @@ class Lox:
     def run_prompt():
         while True:
             try:
-                source = input("> ")
-                Lox.run(source)
+                line = input("> ")
+                Lox.run(line)
+
+                if Lox.had_error:
+                    sys.exit(65)
+
             except EOFError:
                 print("\nExiting...")
                 break
 
     @staticmethod
     def run(source):
-        print(f"Running {source}")
+        scanner = Scanner(source)
+        tokens = scanner.scan_tokens()
+
+        if Lox.had_error:
+            sys.exit(65)
+
+        for token in tokens:
+            print(token)
 
     @staticmethod
     def read_file(path):
