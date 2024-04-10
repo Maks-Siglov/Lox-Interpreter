@@ -28,6 +28,10 @@ class Scanner:
     def is_at_end(self):
         return self.current >= len(self.source)
 
+    def advance(self):
+        self.current += 1
+        return self.source[self.current - 1]
+
     def add_token(self, token_type, literal=None):
         text = self.source[self.start: self.current]
         self.tokens.append(
