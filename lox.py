@@ -1,5 +1,4 @@
 import sys
-import os
 
 from scanner import Scanner
 

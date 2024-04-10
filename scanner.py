@@ -34,7 +34,7 @@ class Scanner:
         return self.source[self.current - 1]
 
     def add_token(self, token_type, literal=None):
-        text = self.source[self.start:self.current]
+        text = self.source[self.start: self.current]
         self.tokens.append(
             Token(
                 token_type=token_type,
@@ -54,37 +54,47 @@ class Scanner:
 
     def scan_token(self):
         c = self.advance()
-        if c == '(':
+        if c == "(":
             self.add_token(TokenType.LEFT_PAREN)
-        elif c == ')':
+        elif c == ")":
             self.add_token(TokenType.RIGHT_PAREN)
-        elif c == '{':
+        elif c == "{":
             self.add_token(TokenType.LEFT_BRACE)
-        elif c == '}':
+        elif c == "}":
             self.add_token(TokenType.RIGHT_BRACE)
-        elif c == ',':
+        elif c == ",":
             self.add_token(TokenType.COMMA)
-        elif c == '.':
+        elif c == ".":
             self.add_token(TokenType.DOT)
-        elif c == '-':
+        elif c == "-":
             self.add_token(TokenType.MINUS)
-        elif c == '+':
+        elif c == "+":
             self.add_token(TokenType.PLUS)
-        elif c == ';':
+        elif c == ";":
             self.add_token(TokenType.SEMICOLON)
-        elif c == '*':
+        elif c == "*":
             self.add_token(TokenType.STAR)
-        elif c == '!':
-            token_type = TokenType.BANG_EQUAL if self.match("=") else TokenType.BANG
+        elif c == "!":
+            token_type = (
+                TokenType.BANG_EQUAL if self.match("=") else TokenType.BANG
+            )
             self.add_token(token_type)
-        elif c == '=':
-            token_type = TokenType.EQUAL_EQUAL if self.match("=") else TokenType.EQUAL
+        elif c == "=":
+            token_type = (
+                TokenType.EQUAL_EQUAL if self.match("=") else TokenType.EQUAL
+            )
             self.add_token(token_type)
-        elif c == '<':
-            token_type = TokenType.LESS_EQUAL if self.match('=') else TokenType.LESS
+        elif c == "<":
+            token_type = (
+                TokenType.LESS_EQUAL if self.match("=") else TokenType.LESS
+            )
             self.add_token(token_type)
-        elif c == '>':
-            token_type = TokenType.GREATER_EQUAL if self.match('=') else TokenType.GREATER
+        elif c == ">":
+            token_type = (
+                TokenType.GREATER_EQUAL
+                if self.match("=")
+                else TokenType.GREATER
+            )
             self.add_token(token_type)
         else:
             # Lox.error(self.line, f"Unexpected character: {c}")
