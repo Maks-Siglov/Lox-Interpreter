@@ -1,3 +1,4 @@
+from lox import Lox
 from token import Token
 from token_type import TokenType
 
@@ -20,7 +21,7 @@ class Scanner:
                 token_type=TokenType.EOF,
                 lexeme="",
                 literal=None,
-                line=self.line
+                line=self.line,
             )
         )
         return self.tokens
@@ -28,5 +29,42 @@ class Scanner:
     def is_at_end(self):
         return self.current >= len(self.source)
 
+    def advance(self):
+        self.current += 1
+        return self.source[self.current - 1]
+
+    def add_token(self, token_type, literal=None):
+        text = self.source[self.start:self.current]
+        self.tokens.append(
+            Token(
+                token_type=token_type,
+                lexeme=text,
+                literal=literal,
+                line=self.line,
+            )
+        )
+
     def scan_token(self):
-        pass
+        c = self.advance()
+        if c == '(':
+            self.add_token(TokenType.LEFT_PAREN)
+        elif c == ')':
+            self.add_token(TokenType.RIGHT_PAREN)
+        elif c == '{':
+            self.add_token(TokenType.LEFT_BRACE)
+        elif c == '}':
+            self.add_token(TokenType.RIGHT_BRACE)
+        elif c == ',':
+            self.add_token(TokenType.COMMA)
+        elif c == '.':
+            self.add_token(TokenType.DOT)
+        elif c == '-':
+            self.add_token(TokenType.MINUS)
+        elif c == '+':
+            self.add_token(TokenType.PLUS)
+        elif c == ';':
+            self.add_token(TokenType.SEMICOLON)
+        elif c == '*':
+            self.add_token(TokenType.STAR)
+        else:
+            Lox.error(self.line, f"Unexpected character: {c}")
