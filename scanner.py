@@ -3,6 +3,25 @@ from token_type import TokenType
 
 
 class Scanner:
+    keywords = {
+        "and": TokenType.AND,
+        "class": TokenType.CLASS,
+        "else": TokenType.ELSE,
+        "false": TokenType.FALSE,
+        "for": TokenType.FOR,
+        "fun": TokenType.FUN,
+        "if": TokenType.IF,
+        "nil": TokenType.NIL,
+        "or": TokenType.OR,
+        "print": TokenType.PRINT,
+        "return": TokenType.RETURN,
+        "super": TokenType.SUPER,
+        "this": TokenType.THIS,
+        "true": TokenType.TRUE,
+        "var": TokenType.VAR,
+        "while": TokenType.WHILE
+    }
+
     def __init__(self, source):
         self.source = source
         self.tokens = []
@@ -33,7 +52,7 @@ class Scanner:
         return self.source[self.current - 1]
 
     def add_token(self, token_type, literal=None):
-        text = self.source[self.start : self.current]
+        text = self.source[self.start: self.current]
         self.tokens.append(
             Token(
                 token_type=token_type,
@@ -57,7 +76,7 @@ class Scanner:
         return self.source[self.current]
 
     def peek_next(self):
-        if self.current >= len(self.source):
+        if self.current + 1 >= len(self.source):
             return "/0"
         return self.source[self.current + 1]
 
@@ -128,6 +147,9 @@ class Scanner:
         elif c.isdigit():
             self.number()
 
+        elif c.isalpha():
+            self.identifier()
+
         else:
             # Lox.error(self.line, f"Unexpected character: {c}")
             print(f"Unexpected character: {c}. Line: {self.line}")
@@ -162,3 +184,13 @@ class Scanner:
             TokenType.NUMBER,
             literal=float(self.source[self.start: self.current]),
         )
+
+    def identifier(self):
+        while self.peek().isalnum():
+            self.advance()
+
+        # Check if identifier is a reserved keyword
+        text = self.source[self.start: self.current]
+        token_type = self.keywords.get(text, TokenType.IDENTIFIER)
+
+        self.add_token(token_type=token_type)
