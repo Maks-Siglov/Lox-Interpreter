@@ -1,4 +1,3 @@
-# from lox import Lox
 from token import Token
 from token_type import TokenType
 
@@ -29,10 +28,6 @@ class Scanner:
     def is_at_end(self):
         return self.current >= len(self.source)
 
-    def advance(self):
-        self.current += 1
-        return self.source[self.current - 1]
-
     def add_token(self, token_type, literal=None):
         text = self.source[self.start: self.current]
         self.tokens.append(
@@ -51,6 +46,11 @@ class Scanner:
             return False
         self.current += 1
         return True
+
+    def peek(self):
+        if self.is_at_end():
+            return "/0"
+        return self.source[self.current]
 
     def scan_token(self):
         c = self.advance()
@@ -96,6 +96,22 @@ class Scanner:
                 else TokenType.GREATER
             )
             self.add_token(token_type)
+
+        elif c == "/":
+            if self.match("/"):
+                # Comment goes until the end of the line
+                # We don't call add_token(), because comments aren't meaningful
+                while self.peek() != "/n" and not self.is_at_end():
+                    self.advance()
+            else:
+                self.add_token(TokenType.SLASH)
+
+        elif c in [" ", "/r", "/t"]:
+            # Ignore whitespace
+            pass
+
+        elif c == "/n":
+            self.line += 1
         else:
             # Lox.error(self.line, f"Unexpected character: {c}")
             print(f"Unexpected character: {c}. Line: {self.line}")
