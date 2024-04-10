@@ -33,7 +33,7 @@ class Scanner:
         return self.source[self.current - 1]
 
     def add_token(self, token_type, literal=None):
-        text = self.source[self.start: self.current]
+        text = self.source[self.start : self.current]
         self.tokens.append(
             Token(
                 token_type=token_type,
@@ -55,6 +55,11 @@ class Scanner:
         if self.is_at_end():
             return "/0"
         return self.source[self.current]
+
+    def peek_next(self):
+        if self.current >= len(self.source):
+            return "/0"
+        return self.source[self.current + 1]
 
     def scan_token(self):
         c = self.advance()
@@ -116,6 +121,44 @@ class Scanner:
 
         elif c == "/n":
             self.line += 1
+
+        elif c == '"':
+            self.string()
+
+        elif c.isdigit():
+            self.number()
+
         else:
             # Lox.error(self.line, f"Unexpected character: {c}")
             print(f"Unexpected character: {c}. Line: {self.line}")
+
+    def string(self):
+        while self.peek() != '"' and not self.is_at_end():
+            if self.peek() == "/n":
+                self.line += 1
+
+            self.advance()
+
+        if self.is_at_end():
+            print(f"Unterminated string. Line: {self.line}")
+            return
+
+        self.advance()
+        string_value = self.source[self.start + 1 : self.current - 1]
+        self.add_token(TokenType.STRING, literal=string_value)
+
+    def number(self):
+        while self.peek().isdigit():
+            self.advance()
+
+        if self.peek() == "." and self.peek_next().isdigit():
+            # Skip '.'
+            self.advance()
+
+            while self.peek().isdigit():
+                self.advance()
+
+        self.add_token(
+            TokenType.NUMBER,
+            literal=float(self.source[self.start: self.current]),
+        )
