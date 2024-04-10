@@ -1,4 +1,4 @@
-from lox import Lox
+# from lox import Lox
 from token import Token
 from token_type import TokenType
 
@@ -44,6 +44,14 @@ class Scanner:
             )
         )
 
+    def match(self, expected):
+        if self.is_at_end():
+            return False
+        if self.source[self.current] != expected:
+            return False
+        self.current += 1
+        return True
+
     def scan_token(self):
         c = self.advance()
         if c == '(':
@@ -66,5 +74,18 @@ class Scanner:
             self.add_token(TokenType.SEMICOLON)
         elif c == '*':
             self.add_token(TokenType.STAR)
+        elif c == '!':
+            token_type = TokenType.BANG_EQUAL if self.match("=") else TokenType.BANG
+            self.add_token(token_type)
+        elif c == '=':
+            token_type = TokenType.EQUAL_EQUAL if self.match("=") else TokenType.EQUAL
+            self.add_token(token_type)
+        elif c == '<':
+            token_type = TokenType.LESS_EQUAL if self.match('=') else TokenType.LESS
+            self.add_token(token_type)
+        elif c == '>':
+            token_type = TokenType.GREATER_EQUAL if self.match('=') else TokenType.GREATER
+            self.add_token(token_type)
         else:
-            Lox.error(self.line, f"Unexpected character: {c}")
+            # Lox.error(self.line, f"Unexpected character: {c}")
+            print(f"Unexpected character: {c}. Line: {self.line}")

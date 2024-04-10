@@ -16,6 +16,7 @@ class Lox:
     @staticmethod
     def run_prompt():
         while True:
+            print("run prompt start")
             try:
                 line = input("> ")
                 Lox.run(line)
