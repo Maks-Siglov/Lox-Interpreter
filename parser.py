@@ -1,4 +1,4 @@
-from expression import Binary
+from expression import Binary, Unary, Literal, Grouping
 from token_type import TokenType
 
 
@@ -58,7 +58,34 @@ class Parser:
         return expr
 
     def unary(self):
-        pass
+        if self.match([TokenType.BANG, TokenType.MINUS]):
+            operator = self.previous()
+            right = self.unary()
+            return Unary(operator, right)
+
+        return self.primary()
+
+    def primary(self):
+        if self.match([TokenType.FALSE]):
+            return Literal(False)
+        elif self.match([TokenType.TRUE]):
+            return Literal(True)
+        elif self.match([TokenType.NIL]):
+            return Literal(None)
+
+        elif self.match([TokenType.STRING, TokenType.NUMBER]):
+            return Literal(self.previous().literal)
+
+        elif self.match([TokenType.LEFT_PAREN]):
+            expr = self.expression()
+            self.consume(TokenType.LEFT_PAREN, "Expect ')' after expression.")
+            return Grouping(expr)
+
+    def consume(self, token_type, message):
+        if self.check(token_type):
+            return self.advance()
+
+        self.error(self.peek(), message)
 
     def match(self, types):
         for token_type in types:
@@ -85,3 +112,6 @@ class Parser:
 
     def is_at_end(self):
         return self.peek().type == "EOF"
+
+    def error(self, token, message):
+        raise Exception(message)
