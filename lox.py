@@ -1,5 +1,6 @@
 import sys
 
+from parser import Parser
 from scanner import Scanner
 
 
@@ -34,8 +35,9 @@ class Lox:
         if Lox.had_error:
             sys.exit(65)
 
-        for token in tokens:
-            print(token)
+        parser = Parser(tokens)
+        expr = parser.parse()
+        print(expr.value)
 
     @staticmethod
     def read_file(path):
