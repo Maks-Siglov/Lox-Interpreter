@@ -1,4 +1,11 @@
-from expression import Binary, Unary, Literal, Grouping
+from expression import (
+    Binary,
+    Expr,
+    Grouping,
+    Literal,
+    Unary,
+)
+from token import Token
 from token_type import TokenType
 
 
@@ -7,10 +14,10 @@ class Parser:
         self.tokens = tokens
         self.current = 0
 
-    def expression(self):
+    def expression(self) -> Expr:
         return self.equality()
 
-    def equality(self):
+    def equality(self) -> Expr:
         expr = self.comparison()
 
         while self.match([TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL]):
@@ -20,7 +27,7 @@ class Parser:
 
         return expr
 
-    def comparison(self):
+    def comparison(self) -> Expr:
         expr = self.term()
 
         comparison_types = [
@@ -37,7 +44,7 @@ class Parser:
 
         return expr
 
-    def term(self):
+    def term(self) -> Expr:
         expr = self.factor()
 
         while self.match([TokenType.MINUS, TokenType.PLUS]):
@@ -47,7 +54,7 @@ class Parser:
 
         return expr
 
-    def factor(self):
+    def factor(self) -> Expr:
         expr = self.unary()
 
         while self.match([TokenType.SLASH, TokenType.STAR]):
@@ -57,7 +64,7 @@ class Parser:
 
         return expr
 
-    def unary(self):
+    def unary(self) -> Expr:
         if self.match([TokenType.BANG, TokenType.MINUS]):
             operator = self.previous()
             right = self.unary()
@@ -65,7 +72,7 @@ class Parser:
 
         return self.primary()
 
-    def primary(self):
+    def primary(self) -> Expr:
         if self.match([TokenType.FALSE]):
             return Literal(False)
         elif self.match([TokenType.TRUE]):
@@ -81,37 +88,39 @@ class Parser:
             self.consume(TokenType.LEFT_PAREN, "Expect ')' after expression.")
             return Grouping(expr)
 
-    def consume(self, token_type, message):
+    def consume(
+        self, token_type: TokenType, message: str
+    ) -> Token | Exception:
         if self.check(token_type):
             return self.advance()
 
         self.error(self.peek(), message)
 
-    def match(self, types):
+    def match(self, types: list[TokenType]) -> bool:
         for token_type in types:
             if self.check(token_type):
                 return True
 
         return False
 
-    def check(self, expected_type):
+    def check(self, expected_type: TokenType) -> bool:
         if self.is_at_end():
             return False
-        return self.peek().type == expected_type
+        return self.peek().token_type == expected_type
 
-    def advance(self):
+    def advance(self) -> Token:
         if not self.is_at_end():
             self.current += 1
         return self.previous()
 
-    def peek(self):
+    def peek(self) -> Token:
         return self.tokens.get(self.current)
 
-    def previous(self):
+    def previous(self) -> Token:
         return self.tokens.get(self.current - 1)
 
-    def is_at_end(self):
-        return self.peek().type == "EOF"
+    def is_at_end(self) -> bool:
+        return self.peek().token_type == "EOF"
 
-    def error(self, token, message):
+    def error(self, token: Token, message: str) -> Exception:
         raise Exception(message)
