@@ -5,7 +5,7 @@ from expression import (
     Literal,
     Unary,
 )
-from token import Token
+from plox_token import Token
 from token_type import TokenType
 
 
@@ -35,7 +35,6 @@ class Parser:
             operator = self.previous()
             right = self.comparison()
             expr = Binary(expr, operator, right)
-            print(expr)
         return expr
 
     def comparison(self) -> Expr:
@@ -103,15 +102,16 @@ class Parser:
 
     def consume(
         self, token_type: TokenType, message: str
-    ) -> Token | Exception:
+    ) -> Token | ParserError:
         if self.check(token_type):
             return self.advance()
 
-        self.error(self.peek(), message)
+        # self.error(self.peek(), message)
 
     def match(self, types: list[TokenType]) -> bool:
         for token_type in types:
             if self.check(token_type):
+                self.advance()
                 return True
 
         return False

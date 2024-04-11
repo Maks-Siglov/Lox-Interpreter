@@ -37,7 +37,11 @@ class Lox:
 
         parser = Parser(tokens)
         expr = parser.parse()
-        print(expr.value)
+        print(expr)
+        if expr:
+            print(expr.__dict__)
+        # for v, k in expr.__dict__.items():
+        #     print(v, k.__dict__)
 
     @staticmethod
     def read_file(path):

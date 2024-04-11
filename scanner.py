@@ -1,4 +1,4 @@
-from token import Token
+from plox_token import Token
 from token_type import TokenType
 
 
@@ -52,7 +52,7 @@ class Scanner:
         return self.source[self.current - 1]
 
     def add_token(self, token_type: TokenType, literal=None) -> None:
-        text = self.source[self.start: self.current]
+        text = self.source[self.start : self.current]
         self.tokens.append(
             Token(
                 token_type=token_type,
@@ -166,7 +166,7 @@ class Scanner:
             return
 
         self.advance()
-        string_value = self.source[self.start + 1: self.current - 1]
+        string_value = self.source[self.start + 1 : self.current - 1]
         self.add_token(TokenType.STRING, literal=string_value)
 
     def number(self) -> None:
@@ -182,7 +182,7 @@ class Scanner:
 
         self.add_token(
             TokenType.NUMBER,
-            literal=float(self.source[self.start: self.current]),
+            literal=float(self.source[self.start : self.current]),
         )
 
     def identifier(self) -> None:
@@ -190,7 +190,7 @@ class Scanner:
             self.advance()
 
         # Check if identifier is a reserved keyword
-        text = self.source[self.start: self.current]
+        text = self.source[self.start : self.current]
         token_type = self.keywords.get(text, TokenType.IDENTIFIER)
 
         self.add_token(token_type=token_type)
