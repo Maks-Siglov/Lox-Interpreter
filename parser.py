@@ -20,7 +20,45 @@ class Parser:
 
         return expr
 
-    def comparison(self): ...
+    def comparison(self):
+        expr = self.term()
+
+        comparison_types = [
+            TokenType.GREATER,
+            TokenType.GREATER_EQUAL,
+            TokenType.LESS,
+            TokenType.LESS_EQUAL,
+        ]
+
+        while self.match(comparison_types):
+            operator = self.previous()
+            right = self.term()
+            expr = Binary(expr, operator, right)
+
+        return expr
+
+    def term(self):
+        expr = self.factor()
+
+        while self.match([TokenType.MINUS, TokenType.PLUS]):
+            operator = self.previous()
+            right = self.factor()
+            expr = Binary(expr, operator, right)
+
+        return expr
+
+    def factor(self):
+        expr = self.unary()
+
+        while self.match([TokenType.SLASH, TokenType.STAR]):
+            operator = self.previous()
+            right = self.unary()
+            expr = Binary(expr, operator, right)
+
+        return expr
+
+    def unary(self):
+        pass
 
     def match(self, types):
         for token_type in types:
