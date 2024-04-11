@@ -29,7 +29,7 @@ class Scanner:
         self.current = 0
         self.line = 1
 
-    def scan_tokens(self):
+    def scan_tokens(self) -> list[Token]:
         while not self.is_at_end():
             self.start = self.current
             self.scan_token()
@@ -44,14 +44,14 @@ class Scanner:
         )
         return self.tokens
 
-    def is_at_end(self):
+    def is_at_end(self) -> bool:
         return self.current >= len(self.source)
 
-    def advance(self):
+    def advance(self) -> str:
         self.current += 1
         return self.source[self.current - 1]
 
-    def add_token(self, token_type, literal=None):
+    def add_token(self, token_type: TokenType, literal=None) -> None:
         text = self.source[self.start: self.current]
         self.tokens.append(
             Token(
@@ -62,7 +62,7 @@ class Scanner:
             )
         )
 
-    def match(self, expected):
+    def match(self, expected: str) -> bool:
         if self.is_at_end():
             return False
         if self.source[self.current] != expected:
@@ -70,17 +70,17 @@ class Scanner:
         self.current += 1
         return True
 
-    def peek(self):
+    def peek(self) -> str:
         if self.is_at_end():
             return "/0"
         return self.source[self.current]
 
-    def peek_next(self):
+    def peek_next(self) -> str:
         if self.current + 1 >= len(self.source):
             return "/0"
         return self.source[self.current + 1]
 
-    def scan_token(self):
+    def scan_token(self) -> None:
         c = self.advance()
         if c == "(":
             self.add_token(TokenType.LEFT_PAREN)
@@ -154,7 +154,7 @@ class Scanner:
             # Lox.error(self.line, f"Unexpected character: {c}")
             print(f"Unexpected character: {c}. Line: {self.line}")
 
-    def string(self):
+    def string(self) -> None:
         while self.peek() != '"' and not self.is_at_end():
             if self.peek() == "/n":
                 self.line += 1
@@ -166,10 +166,10 @@ class Scanner:
             return
 
         self.advance()
-        string_value = self.source[self.start + 1 : self.current - 1]
+        string_value = self.source[self.start + 1: self.current - 1]
         self.add_token(TokenType.STRING, literal=string_value)
 
-    def number(self):
+    def number(self) -> None:
         while self.peek().isdigit():
             self.advance()
 
@@ -185,7 +185,7 @@ class Scanner:
             literal=float(self.source[self.start: self.current]),
         )
 
-    def identifier(self):
+    def identifier(self) -> None:
         while self.peek().isalnum():
             self.advance()
 
