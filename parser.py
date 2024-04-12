@@ -95,7 +95,7 @@ class Parser:
 
         elif self.match([TokenType.LEFT_PAREN]):
             expr = self.expression()
-            self.consume(TokenType.LEFT_PAREN, "Expect ')' after expression.")
+            self.consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.")
             return Grouping(expr)
 
         self.error(self.peek(), "Expect expression.")
@@ -106,7 +106,7 @@ class Parser:
         if self.check(token_type):
             return self.advance()
 
-        # self.error(self.peek(), message)
+        self.error(self.peek(), message)
 
     def match(self, types: list[TokenType]) -> bool:
         for token_type in types:

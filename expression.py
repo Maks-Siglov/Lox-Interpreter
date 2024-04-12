@@ -1,4 +1,14 @@
 class Expr:
+    """
+    Expression -> Equality ;
+    Equality -> Comparison ( ( "!=" | "==" ) Comparison )* ;
+    Comparison → Term ( ( ">" | ">=" | "<" | "<=" ) Term )* ;
+    Term → Factor ( ( "-" | "+" ) Factor )* ;
+    Factor → Unary ( ( "/" | "*" ) Unary )* ;
+    Unary -> ("!" | "-")Unary | Primary;
+    Primary → NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
+    """
+
     pass
 
 
