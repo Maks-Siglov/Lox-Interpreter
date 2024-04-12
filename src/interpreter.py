@@ -1,33 +1,46 @@
-from expression import Expr, Grouping, Literal
-from stmt import Expression, Stmt
+import expression
+import stmt
+from environment import Environment
 from token_type import TokenType
 
 
 class Interpreter:
+    def __init__(self):
+        self.environment = Environment()
 
-    def interpret(self, statements: list[Stmt]):
+    def interpret(self, statements: list[stmt.Stmt]):
         try:
             for statement in statements:
                 self.execute(statement)
         except RuntimeError as error:
             print(error)
 
-    def execute(self, statement: Stmt):
+    def execute(self, statement: stmt.Stmt):
         statement.accept(self)
 
-    def visit_expression_stmt(self, stmt: Expression):
-        self.evaluate(stmt.expr)
+    def visit_expression_stmt(self, statement: stmt.Expression):
+        self.evaluate(statement.expr)
 
-    def visit_print_stmt(self, stmt):
-        value = self.evaluate(stmt.expr)
+    def visit_print_stmt(self, statement):
+        value = self.evaluate(statement.expr)
         print(self.stringify(value))
         return None
 
+    def visit_var_stmt(self, statement: stmt.Var):
+        value = None
+        if statement.initializer is not None:
+            value = self.evaluate(statement.initializer)
+
+        self.environment.define_var(statement.name.lexeme, value)
+
+    def visit_var_expr(self, expr: expression.Var):
+        return self.environment.get_var(expr.name)
+
     @staticmethod
-    def visit_literal_expr(expr: Literal):
+    def visit_literal_expr(expr: expression.Literal):
         return expr.value
 
-    def visit_grouping_expr(self, expr: Grouping):
+    def visit_grouping_expr(self, expr: expression.Grouping):
         return self.evaluate(expr.expr)
 
     def visit_unary_expr(self, expr):
@@ -86,7 +99,7 @@ class Interpreter:
 
         return None
 
-    def evaluate(self, expr: Expr):
+    def evaluate(self, expr: expression.Expr):
         return expr.accept(self)
 
     @staticmethod

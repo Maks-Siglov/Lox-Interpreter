@@ -1,6 +1,8 @@
 class Stmt:
     """
-    Program -> Statement * EOF ;
+    Program -> Declaration * EOF ;
+    Declaration -> VarDecl | Statement :
+    VarDecl -> "var" IDENTIFIER ( "=" expression )? ";" ;
     Statement -> ExprStmt | PrintStmt ;
     ExprStmt -> expression ";" ;
     PrintStmt -> "print" expression ";" ;
@@ -26,3 +28,12 @@ class Expression(Stmt):
 
     def accept(self, visitor):
         return visitor.visit_expression_stmt(self)
+
+
+class Var(Stmt):
+    def __init__(self, name, initializer):
+        self.name = name
+        self.initializer = initializer
+
+    def accept(self, visitor):
+        return visitor.visit_var_stmt(self)

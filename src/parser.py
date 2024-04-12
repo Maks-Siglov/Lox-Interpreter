@@ -1,4 +1,4 @@
-from expression import Binary, Expr, Grouping, Literal, Unary
+from expression import Binary, Expr, Grouping, Literal, Unary, Var
 from plox_token import Token
 from stmt import Expression, Print, Stmt
 from token_type import TokenType
@@ -16,8 +16,26 @@ class Parser:
     def parse(self) -> list[Stmt]:
         statements = []
         while not self.is_at_end():
-            statements.append(self.statement())
+            statements.append(self.declaration())
         return statements
+
+    def declaration(self):
+        try:
+            if self.match([TokenType.VAR]):
+                return self.var_declaration()
+            return self.statement()
+        except ParserError:
+            self.synchronize()
+
+    def var_declaration(self):
+        name = self.consume(TokenType.IDENTIFIER, "Expect variable name.")
+
+        initializer = None
+        if self.match([TokenType.IDENTIFIER]):
+            initializer = self.expression()
+
+        self.consume(TokenType.SEMICOLON, "Expect ';' after value.")
+        return Var(name, initializer)
 
     def statement(self) -> Stmt:
         if self.match([TokenType.PRINT]):
@@ -106,6 +124,9 @@ class Parser:
             expr = self.expression()
             self.consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.")
             return Grouping(expr)
+
+        elif self.match([TokenType.IDENTIFIER]):
+            return Var(self.previous())
 
         self.error(self.peek(), "Expect expression.")
 

@@ -6,8 +6,10 @@ class Expr:
     Term → Factor ( ( "-" | "+" ) Factor )* ;
     Factor → Unary ( ( "/" | "*" ) Unary )* ;
     Unary -> ("!" | "-")Unary | Primary;
-    Primary -> NUMBER | STRING | "true" | "false" | "nil"
-        | "(" expression ")" ;
+    Primary -> "true" | "false" | "nil"
+        |  NUMBER | STRING
+        | "(" expression ")"
+        | IDENTIFIER ;
     """
 
     def accept(self, visitor):
@@ -49,3 +51,20 @@ class Grouping(Expr):
 
     def accept(self, visitor):
         return visitor.visit_grouping_expr(self)
+
+
+class Assign(Expr):
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+    def accept(self, visitor):
+        return visitor.visit_assign_expr(self)
+
+
+class Var(Expr):
+    def __init__(self, name):
+        self.name = name
+
+    def accept(self, visitor):
+        return visitor.visit_var_expr(self)
