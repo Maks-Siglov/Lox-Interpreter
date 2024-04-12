@@ -1,5 +1,6 @@
 import sys
 
+from interpreter import Interpreter
 from parser import Parser
 from scanner import Scanner
 
@@ -37,11 +38,9 @@ class Lox:
 
         parser = Parser(tokens)
         expr = parser.parse()
-        print(expr)
-        if expr:
-            print(expr.__dict__)
-        # for v, k in expr.__dict__.items():
-        #     print(v, k.__dict__)
+
+        interpreter = Interpreter()
+        interpreter.interpret(expr)
 
     @staticmethod
     def read_file(path):
