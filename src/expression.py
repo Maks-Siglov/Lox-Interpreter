@@ -1,6 +1,7 @@
 class Expr:
     """
-    Expression -> Equality ;
+    Expression -> Assignment ;
+    assignment -> IDENTIFIER "=" Assignment | Equality ;
     Equality -> Comparison ( ( "!=" | "==" ) Comparison )* ;
     Comparison → Term ( ( ">" | ">=" | "<" | "<=" ) Term )* ;
     Term → Factor ( ( "-" | "+" ) Factor )* ;

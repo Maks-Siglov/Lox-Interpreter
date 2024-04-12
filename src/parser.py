@@ -1,4 +1,4 @@
-from expression import Binary, Expr, Grouping, Literal, Unary, Var
+from expression import Binary, Expr, Grouping, Literal, Unary, Var, Assign
 from plox_token import Token
 from stmt import Expression, Print, Stmt
 from token_type import TokenType
@@ -53,7 +53,21 @@ class Parser:
         return Expression(expr)
 
     def expression(self) -> Expr:
-        return self.equality()
+        return self.assigment()
+
+    def assigment(self) -> Expr:
+        expr = self.equality()
+
+        if self.match([TokenType.EQUAL]):
+            value = self.assigment()
+
+            if isinstance(expr, Var):
+                name = expr.name
+                return Assign(name, value)
+
+            raise ParserError(f"Invalid assigment target: {type(expr)}")
+
+        return expr
 
     def equality(self) -> Expr:
         expr = self.comparison()

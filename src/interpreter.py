@@ -36,6 +36,11 @@ class Interpreter:
     def visit_var_expr(self, expr: expression.Var):
         return self.environment.get_var(expr.name)
 
+    def visit_assign_expr(self, expr: expression.Assign):
+        value = self.evaluate(expr.value)
+        self.environment.assign(expr.name.lexeme, value)
+        return value
+
     @staticmethod
     def visit_literal_expr(expr: expression.Literal):
         return expr.value
