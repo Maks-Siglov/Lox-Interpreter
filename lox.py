@@ -37,10 +37,10 @@ class Lox:
             sys.exit(65)
 
         parser = Parser(tokens)
-        expr = parser.parse()
+        statements = parser.parse()
 
         interpreter = Interpreter()
-        interpreter.interpret(expr)
+        interpreter.interpret(statements)
 
     @staticmethod
     def read_file(path):

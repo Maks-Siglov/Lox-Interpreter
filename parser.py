@@ -6,6 +6,7 @@ from expression import (
     Unary,
 )
 from plox_token import Token
+from stmt import Print, Expression, Stmt
 from token_type import TokenType
 
 
@@ -18,12 +19,26 @@ class Parser:
         self.tokens = tokens
         self.current = 0
 
-    def parse(self):
-        try:
-            return self.expression()
-        except ParserError as e:
-            print(e)
-            return None
+    def parse(self) -> list[Stmt]:
+        statements = []
+        while not self.is_at_end():
+            statements.append(self.statement())
+        return statements
+
+    def statement(self) -> Stmt:
+        if self.match([TokenType.PRINT]):
+            return self.print_statement()
+        return self.expression_statement()
+
+    def print_statement(self) -> Print:
+        value = self.expression()
+        self.consume(TokenType.SEMICOLON, "Expect ';' after value.")
+        return Print(value)
+
+    def expression_statement(self) -> Expression:
+        expr = self.expression()
+        self.consume(TokenType.SEMICOLON, "Expect ';' after value.")
+        return Expression(expr)
 
     def expression(self) -> Expr:
         return self.equality()
@@ -133,7 +148,7 @@ class Parser:
         return self.tokens[self.current - 1]
 
     def is_at_end(self) -> bool:
-        return self.peek().token_type == "EOF"
+        return self.peek().token_type == TokenType.EOF
 
     @staticmethod
     def error(token: Token, message: str):

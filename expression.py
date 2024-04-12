@@ -6,7 +6,8 @@ class Expr:
     Term → Factor ( ( "-" | "+" ) Factor )* ;
     Factor → Unary ( ( "/" | "*" ) Unary )* ;
     Unary -> ("!" | "-")Unary | Primary;
-    Primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")";
+    Primary -> NUMBER | STRING | "true" | "false" | "nil"
+        | "(" expression ")" ;
     """
 
     def accept(self, visitor):

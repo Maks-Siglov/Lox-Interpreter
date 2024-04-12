@@ -1,15 +1,27 @@
 from expression import Grouping, Literal, Expr
+from stmt import Expression, Stmt
 from token_type import TokenType
 
 
 class Interpreter:
 
-    def interpret(self, expression):
+    def interpret(self, statements: list[Stmt]):
         try:
-            value = self.evaluate(expression)
-            print(self.stringify(value))
+            for statement in statements:
+                self.execute(statement)
         except RuntimeError as error:
             print(error)
+
+    def execute(self, statement: Stmt):
+        statement.accept(self)
+
+    def visit_expression_stmt(self, stmt: Expression):
+        self.evaluate(stmt.expr)
+
+    def visit_print_stmt(self, stmt):
+        value = self.evaluate(stmt.expr)
+        print(self.stringify(value))
+        return None
 
     @staticmethod
     def visit_literal_expr(expr: Literal):
