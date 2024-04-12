@@ -1,4 +1,4 @@
-from expression import Grouping, Literal, Expr
+from expression import Expr, Grouping, Literal
 from stmt import Expression, Stmt
 from token_type import TokenType
 

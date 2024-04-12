@@ -1,12 +1,6 @@
-from expression import (
-    Binary,
-    Expr,
-    Grouping,
-    Literal,
-    Unary,
-)
+from expression import Binary, Expr, Grouping, Literal, Unary
 from plox_token import Token
-from stmt import Print, Expression, Stmt
+from stmt import Expression, Print, Stmt
 from token_type import TokenType
 
 
