@@ -1,3 +1,4 @@
+import stmt
 from expression import Binary, Expr, Grouping, Literal, Unary, Var, Assign
 from plox_token import Token
 from stmt import Expression, Print, Stmt
@@ -20,22 +21,19 @@ class Parser:
         return statements
 
     def declaration(self):
-        try:
-            if self.match([TokenType.VAR]):
-                return self.var_declaration()
-            return self.statement()
-        except ParserError:
-            self.synchronize()
+        if self.match([TokenType.VAR]):
+            return self.var_declaration()
+        return self.statement()
 
     def var_declaration(self):
         name = self.consume(TokenType.IDENTIFIER, "Expect variable name.")
 
         initializer = None
-        if self.match([TokenType.IDENTIFIER]):
+        if self.match([TokenType.EQUAL]):
             initializer = self.expression()
 
         self.consume(TokenType.SEMICOLON, "Expect ';' after value.")
-        return Var(name, initializer)
+        return stmt.Var(name, initializer)
 
     def statement(self) -> Stmt:
         if self.match([TokenType.PRINT]):

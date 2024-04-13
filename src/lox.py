@@ -32,13 +32,14 @@ class Lox:
     def run(source):
         scanner = Scanner(source)
         tokens = scanner.scan_tokens()
-
+        for token in tokens:
+            print(token.__dict__)
         if Lox.had_error:
             sys.exit(65)
 
         parser = Parser(tokens)
         statements = parser.parse()
-
+        print(statements)
         interpreter = Interpreter()
         interpreter.interpret(statements)
 
