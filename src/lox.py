@@ -1,6 +1,6 @@
 import sys
-
 from parser import Parser
+
 from interpreter import Interpreter
 from scanner import Scanner
 

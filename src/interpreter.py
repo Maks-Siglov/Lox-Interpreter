@@ -1,4 +1,4 @@
-import expression
+import expr
 import stmt
 from environment import Environment
 from token_type import TokenType
@@ -40,7 +40,7 @@ class Interpreter:
         return None
 
     def execute_block(
-            self, statements: list[stmt.Stmt], environment: Environment
+        self, statements: list[stmt.Stmt], environment: Environment
     ):
         previous = self.environment
         try:
@@ -61,57 +61,58 @@ class Interpreter:
         while self.is_truthy(statement.condition):
             self.execute(statement.body)
 
-    def visit_var_expr(self, expr: expression.Var):
-        return self.environment.get_var(expr.token.lexeme)
+    def visit_var_expr(self, var_expr: expr.Var):
+        return self.environment.get_var(var_expr.token.lexeme)
 
-    def visit_assign_expr(self, expr: expression.Assign):
-        value = self.evaluate(expr.value)
-        self.environment.assign(expr.name.lexeme, value)
+    def visit_assign_expr(self, assign_expr: expr.Assign):
+        value = self.evaluate(assign_expr.value)
+        self.environment.assign(assign_expr.name.lexeme, value)
         return value
 
     @staticmethod
-    def visit_literal_expr(expr: expression.Literal):
-        return expr.value
+    def visit_literal_expr(literal_expr: expr.Literal):
+        return literal_expr.value
 
-    def visit_logical_expr(self, expr: expression.Logical):
-        left = self.evaluate(expr.left)
+    def visit_logical_expr(self, logical_expr: expr.Logical):
+        left = self.evaluate(logical_expr.left)
 
-        if expr.operator.token_type == TokenType.OR:
+        if logical_expr.operator.token_type == TokenType.OR:
             if self.is_truthy(left):
                 return left
         else:
             if not self.is_truthy(left):
                 return left
-        return self.evaluate(expr.right)
+        return self.evaluate(logical_expr.right)
 
-    def visit_grouping_expr(self, expr: expression.Grouping):
-        return self.evaluate(expr.expr)
+    def visit_grouping_expr(self, grouping_expr: expr.Grouping):
+        return self.evaluate(grouping_expr.expr)
 
-    def visit_unary_expr(self, expr):
-        right = self.evaluate(expr.right)
-        if expr.operator.token_type == TokenType.BANG:
+    def visit_unary_expr(self, unary_expr: expr.Unary):
+        right = self.evaluate(unary_expr.right)
+        if unary_expr.operator.token_type == TokenType.BANG:
             return not self.is_truthy(right)
-        if expr.operator.token_type == TokenType.MINUS:
-            self.check_number_operand(expr.operator, right)
+        if unary_expr.operator.token_type == TokenType.MINUS:
+            self.check_number_operand(unary_expr.operator, right)
             return -right
 
-    def visit_binary_expr(self, expr):
-        left = self.evaluate(expr.left)
-        right = self.evaluate(expr.right)
+    def visit_binary_expr(self, binary_expr: expr.Binary):
+        print(type(binary_expr), binary_expr, binary_expr.__dict__)
+        left = self.evaluate(binary_expr.left)
+        right = self.evaluate(binary_expr.right)
 
-        operator_type = expr.operator.token_type
+        operator_type = binary_expr.operator.token_type
 
         if operator_type == TokenType.GREATER:
-            self.check_number_operands(expr.operator, left, right)
+            self.check_number_operands(binary_expr.operator, left, right)
             return float(left) > float(right)
         elif operator_type == TokenType.GREATER_EQUAL:
-            self.check_number_operands(expr.operator, left, right)
+            self.check_number_operands(binary_expr.operator, left, right)
             return float(left) >= float(right)
         elif operator_type == TokenType.LESS:
-            self.check_number_operands(expr.operator, left, right)
+            self.check_number_operands(binary_expr.operator, left, right)
             return float(left) < float(right)
         elif operator_type == TokenType.LESS_EQUAL:
-            self.check_number_operands(expr.operator, left, right)
+            self.check_number_operands(binary_expr.operator, left, right)
             return float(left) <= float(right)
 
         elif operator_type == TokenType.BANG_EQUAL:
@@ -120,7 +121,7 @@ class Interpreter:
             return self.is_equal(left, right)
 
         elif operator_type == TokenType.MINUS:
-            self.check_number_operands(expr.operator, left, right)
+            self.check_number_operands(binary_expr.operator, left, right)
             return float(left) - float(right)
 
         elif operator_type == TokenType.PLUS:
@@ -135,16 +136,16 @@ class Interpreter:
             )
 
         elif operator_type == TokenType.SLASH:
-            self.check_number_operands(expr.operator, left, right)
+            self.check_number_operands(binary_expr.operator, left, right)
             return float(left) / float(right)
         elif operator_type == TokenType.STAR:
-            self.check_number_operands(expr.operator, left, right)
+            self.check_number_operands(binary_expr.operator, left, right)
             return float(left) * float(right)
 
         return None
 
-    def evaluate(self, expr: expression.Expr):
-        return expr.accept(self)
+    def evaluate(self, expression: expr.Expr):
+        return expression.accept(self)
 
     @staticmethod
     def is_truthy(value) -> bool:
