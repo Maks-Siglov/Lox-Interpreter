@@ -32,8 +32,8 @@ class Lox:
     def run(source):
         scanner = Scanner(source)
         tokens = scanner.scan_tokens()
-        for token in tokens:
-            print(token.__dict__)
+        # for token in tokens:
+        #     print(token.__dict__)
         if Lox.had_error:
             sys.exit(65)
 

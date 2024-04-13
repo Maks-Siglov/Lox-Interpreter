@@ -3,10 +3,13 @@ class Stmt:
     Program -> Declaration * EOF ;
     Declaration -> VarDecl | Statement :
     VarDecl -> "var" IDENTIFIER ( "=" expression )? ";" ;
-    Statement -> ExprStmt | PrintStmt | Block | ifStmt | WhileStmt;
+    Statement -> ExprStmt | PrintStmt | Block | ifStmt | WhileStmt | ForStmt ;
     ifStmt -> "if" "(" expression ")" statement
         ( "else" statement )? ;
     WhileStmt -> "while" "(" expression ")" statement ;
+    ForStmt -> "for" "("
+        ( varDecl | exprStmt | ";" ) expression? ";" expression?
+        )" statement ;
     Block -> "{" Declaration* "}" ;
     ExprStmt -> expression ";" ;
     PrintStmt -> "print" expression ";" ;

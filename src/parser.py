@@ -49,6 +49,8 @@ class Parser:
             return self.print_statement()
         elif self.match([TokenType.WHILE]):
             return self.while_statement()
+        elif self.match([TokenType.FOR]):
+            return self.for_statement()
         elif self.match([TokenType.LEFT_BRACE]):
             return self.block_statement()
         elif self.match([TokenType.IF]):
@@ -86,6 +88,40 @@ class Parser:
         body = self.statement()
 
         return stmt.While(condition, body)
+
+    def for_statement(self):
+        self.consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.")
+
+        if self.match([TokenType.SEMICOLON]):
+            initializer = None
+        elif self.match([TokenType.VAR]):
+            initializer = self.var_declaration()
+        else:
+            initializer = self.expression_statement()
+
+        condition = None
+        if not self.check(TokenType.SEMICOLON):
+            condition = self.expression()
+        self.consume(TokenType.SEMICOLON, "Expect ';' after loop condition.")
+
+        increment = None
+        if not self.check(TokenType.RIGHT_PAREN):
+            increment = self.expression()
+        self.consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.")
+
+        body = self.statement()
+
+        if increment is not None:
+            body = Block([body, Expression(increment)])
+
+        if condition is None:
+            condition = Literal(True)
+        body = stmt.While(condition, body)
+
+        if initializer is not None:
+            body = Block([initializer, body])
+
+        return body
 
     def expression_statement(self) -> Expression:
         expr = self.expression()
