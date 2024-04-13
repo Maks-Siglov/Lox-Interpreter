@@ -26,14 +26,14 @@ class Parser:
         return self.statement()
 
     def var_declaration(self):
-        name = self.consume(TokenType.IDENTIFIER, "Expect variable name.")
+        token = self.consume(TokenType.IDENTIFIER, "Expect variable name.")
 
         initializer = None
         if self.match([TokenType.EQUAL]):
             initializer = self.expression()
 
         self.consume(TokenType.SEMICOLON, "Expect ';' after value.")
-        return stmt.Var(name, initializer)
+        return stmt.Var(token, initializer)
 
     def statement(self) -> Stmt:
         if self.match([TokenType.PRINT]):
@@ -69,8 +69,8 @@ class Parser:
             value = self.assigment()
 
             if isinstance(expr, Var):
-                name = expr.name
-                return Assign(name, value)
+                token = expr.token
+                return Assign(token, value)
 
             raise ParserError(f"Invalid assigment target: {type(expr)}")
 

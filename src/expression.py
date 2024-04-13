@@ -1,3 +1,6 @@
+from plox_token import Token
+
+
 class Expr:
     """
     Expression -> Assignment ;
@@ -64,8 +67,8 @@ class Assign(Expr):
 
 
 class Var(Expr):
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, token: Token):
+        self.token = token
 
     def accept(self, visitor):
         return visitor.visit_var_expr(self)

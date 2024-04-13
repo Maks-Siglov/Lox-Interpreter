@@ -51,7 +51,7 @@ class Interpreter:
         self.environment.define_var(statement.name.lexeme, value)
 
     def visit_var_expr(self, expr: expression.Var):
-        return self.environment.get_var(expr.name)
+        return self.environment.get_var(expr.token.lexeme)
 
     def visit_assign_expr(self, expr: expression.Assign):
         value = self.evaluate(expr.value)

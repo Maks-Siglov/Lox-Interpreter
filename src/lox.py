@@ -41,7 +41,8 @@ class Lox:
         statements = parser.parse()
         print("statements")
         for statement in statements:
-            print(statement.__dict__)
+            print(statement, statement.__dict__)
+
         interpreter = Interpreter()
         interpreter.interpret(statements)
         print(interpreter.environment.__dict__)
