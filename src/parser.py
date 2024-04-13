@@ -47,6 +47,8 @@ class Parser:
     def statement(self) -> Stmt:
         if self.match([TokenType.PRINT]):
             return self.print_statement()
+        elif self.match([TokenType.WHILE]):
+            return self.while_statement()
         elif self.match([TokenType.LEFT_BRACE]):
             return self.block_statement()
         elif self.match([TokenType.IF]):
@@ -76,6 +78,14 @@ class Parser:
             else_branch = self.statement()
 
         return IfStmt(condition, then_branch, else_branch)
+
+    def while_statement(self):
+        self.consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.")
+        condition = self.expression()
+        self.consume(TokenType.RIGHT_PAREN, "Expect ')' after 'if'.")
+        body = self.statement()
+
+        return stmt.While(condition, body)
 
     def expression_statement(self) -> Expression:
         expr = self.expression()

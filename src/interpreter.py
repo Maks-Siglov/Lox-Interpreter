@@ -57,6 +57,10 @@ class Interpreter:
 
         self.environment.define_var(statement.name.lexeme, value)
 
+    def visit_while_stmt(self, statement: stmt.While):
+        while self.is_truthy(statement.condition):
+            self.execute(statement.body)
+
     def visit_var_expr(self, expr: expression.Var):
         return self.environment.get_var(expr.token.lexeme)
 

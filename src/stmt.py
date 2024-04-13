@@ -3,9 +3,10 @@ class Stmt:
     Program -> Declaration * EOF ;
     Declaration -> VarDecl | Statement :
     VarDecl -> "var" IDENTIFIER ( "=" expression )? ";" ;
-    Statement -> ExprStmt | PrintStmt | Block | ifStmt;
+    Statement -> ExprStmt | PrintStmt | Block | ifStmt | WhileStmt;
     ifStmt -> "if" "(" expression ")" statement
-        ( "else" statement )?   ;
+        ( "else" statement )? ;
+    WhileStmt -> "while" "(" expression ")" statement ;
     Block -> "{" Declaration* "}" ;
     ExprStmt -> expression ";" ;
     PrintStmt -> "print" expression ";" ;
@@ -58,3 +59,12 @@ class IfStmt(Stmt):
 
     def accept(self, visitor):
         return visitor.self_if_stmt(self)
+
+
+class While(Stmt):
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body = body
+
+    def accept(self, visitor):
+        return visitor.visit_while_stmt(self)
