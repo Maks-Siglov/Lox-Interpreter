@@ -141,7 +141,7 @@ class Parser:
         while self.match([TokenType.OR]):
             operator = self.previous()
             right = self.and_condition()
-            expression = expr.Logical(expr, operator, right)
+            expression = expr.Logical(expression, operator, right)
 
         return expression
 
@@ -151,7 +151,7 @@ class Parser:
         while self.match([TokenType.AND]):
             operator = self.previous()
             right = self.equality()
-            expression = expr.Logical(expr, operator, right)
+            expression = expr.Logical(expression, operator, right)
 
         return expression
 

@@ -1,3 +1,4 @@
+from expr import Expr
 from plox_token import Token
 
 
@@ -25,7 +26,7 @@ class Stmt:
 
 
 class Print(Stmt):
-    def __init__(self, expr):
+    def __init__(self, expr: Expr):
         self.expr = expr
 
     def accept(self, visitor):
@@ -33,7 +34,7 @@ class Print(Stmt):
 
 
 class Expression(Stmt):
-    def __init__(self, expr):
+    def __init__(self, expr: Expr):
         self.expr = expr
 
     def accept(self, visitor):
@@ -41,7 +42,7 @@ class Expression(Stmt):
 
 
 class Var(Stmt):
-    def __init__(self, name, initializer):
+    def __init__(self, name: Token, initializer: Expr):
         self.name = name
         self.initializer = initializer
 
@@ -50,7 +51,7 @@ class Var(Stmt):
 
 
 class Block(Stmt):
-    def __init__(self, statements):
+    def __init__(self, statements: list[Stmt]):
         self.statements = statements
 
     def accept(self, visitor):
@@ -58,7 +59,7 @@ class Block(Stmt):
 
 
 class IfStmt(Stmt):
-    def __init__(self, condition, then_stmt, else_stmt):
+    def __init__(self, condition: Expr, then_stmt: Stmt, else_stmt: Stmt):
         self.condition = condition
         self.then_stmt = then_stmt
         self.else_stmt = else_stmt
@@ -68,7 +69,7 @@ class IfStmt(Stmt):
 
 
 class While(Stmt):
-    def __init__(self, condition: Token, body):
+    def __init__(self, condition: Expr, body: Stmt):
         self.condition = condition
         self.body = body
 

@@ -1,3 +1,5 @@
+from typing import Any
+
 from plox_token import Token
 
 
@@ -25,7 +27,7 @@ class Expr:
 
 
 class Binary(Expr):
-    def __init__(self, left, operator, right):
+    def __init__(self, left: Expr, operator: Token, right: Expr):
         self.left = left
         self.operator = operator
         self.right = right
@@ -35,7 +37,7 @@ class Binary(Expr):
 
 
 class Unary(Expr):
-    def __init__(self, operator, right):
+    def __init__(self, operator: Token, right: Expr):
         self.operator = operator
         self.right = right
 
@@ -44,7 +46,7 @@ class Unary(Expr):
 
 
 class Literal(Expr):
-    def __init__(self, value):
+    def __init__(self, value: Any):
         self.value = value
 
     def accept(self, visitor):
@@ -52,7 +54,7 @@ class Literal(Expr):
 
 
 class Grouping(Expr):
-    def __init__(self, expr):
+    def __init__(self, expr: Expr):
         self.expr = expr
 
     def accept(self, visitor):
@@ -60,7 +62,7 @@ class Grouping(Expr):
 
 
 class Assign(Expr):
-    def __init__(self, name, value):
+    def __init__(self, name: Token, value: Expr):
         self.name = name
         self.value = value
 
@@ -77,7 +79,7 @@ class Var(Expr):
 
 
 class Logical(Expr):
-    def __init__(self, left, operator, right):
+    def __init__(self, left: Expr, operator: Token, right: Expr):
         self.left = left
         self.operator = operator
         self.right = right
