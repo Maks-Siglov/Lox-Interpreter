@@ -1,3 +1,6 @@
+from plox_token import Token
+
+
 class Stmt:
     """
     Program -> Declaration * EOF ;
@@ -65,7 +68,7 @@ class IfStmt(Stmt):
 
 
 class While(Stmt):
-    def __init__(self, condition, body):
+    def __init__(self, condition: Token, body):
         self.condition = condition
         self.body = body
 
