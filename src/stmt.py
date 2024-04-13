@@ -3,7 +3,9 @@ class Stmt:
     Program -> Declaration * EOF ;
     Declaration -> VarDecl | Statement :
     VarDecl -> "var" IDENTIFIER ( "=" expression )? ";" ;
-    Statement -> ExprStmt | PrintStmt | Block ;
+    Statement -> ExprStmt | PrintStmt | Block | ifStmt;
+    ifStmt -> "if" "(" expression ")" statement
+        ( "else" statement )?   ;
     Block -> "{" Declaration* "}" ;
     ExprStmt -> expression ";" ;
     PrintStmt -> "print" expression ";" ;
@@ -46,3 +48,13 @@ class Block(Stmt):
 
     def accept(self, visitor):
         return visitor.visit_block_stmt(self)
+
+
+class IfStmt(Stmt):
+    def __init__(self, condition, then_stmt, else_stmt):
+        self.condition = condition
+        self.then_stmt = then_stmt
+        self.else_stmt = else_stmt
+
+    def accept(self, visitor):
+        return visitor.self_if_stmt(self)

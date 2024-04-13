@@ -26,6 +26,13 @@ class Interpreter:
         print(self.stringify(value))
         return None
 
+    def visit_if_stmt(self, statement: stmt.IfStmt):
+        if self.is_truthy(self.evaluate(statement.condition)):
+            self.execute(statement.then_stmt)
+        elif statement.else_stmt is not None:
+            self.execute(statement.else_stmt)
+        return None
+
     def visit_block_stmt(self, block_stmt: stmt.Block):
         self.execute_block(
             block_stmt.statements, Environment(enclosing=self.environment)

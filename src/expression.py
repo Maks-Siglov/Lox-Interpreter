@@ -5,6 +5,8 @@ class Expr:
     """
     Expression -> Assignment ;
     assignment -> IDENTIFIER "=" Assignment | Equality ;
+    Logic_or → Logic_and ( "or" Logic_and )* ;
+    Logic_and → Equality ( "and" Equality )* ;
     Equality -> Comparison ( ( "!=" | "==" ) Comparison )* ;
     Comparison → Term ( ( ">" | ">=" | "<" | "<=" ) Term )* ;
     Term → Factor ( ( "-" | "+" ) Factor )* ;

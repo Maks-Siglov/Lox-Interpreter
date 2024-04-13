@@ -1,7 +1,7 @@
 import stmt
 from expression import Binary, Expr, Grouping, Literal, Unary, Var, Assign
 from plox_token import Token
-from stmt import Expression, Print, Stmt, Block
+from stmt import Expression, Print, Stmt, Block, IfStmt
 from token_type import TokenType
 
 
@@ -40,6 +40,8 @@ class Parser:
             return self.print_statement()
         elif self.match([TokenType.LEFT_BRACE]):
             return self.block_statement()
+        elif self.match([TokenType.IF]):
+            return self.if_statement()
         return self.expression_statement()
 
     def print_statement(self) -> Print:
@@ -53,6 +55,18 @@ class Parser:
             statements.append(self.declaration())
         self.consume(TokenType.RIGHT_BRACE, "Expect '}' after block.")
         return Block(statements)
+
+    def if_statement(self):
+        self.consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.")
+        condition = self.expression()
+        self.consume(TokenType.RIGHT_PAREN, "Expect ')' after 'if'.")
+
+        then_branch = self.statement()
+        else_branch = None
+        if self.match([TokenType.ELSE]):
+            else_branch = self.statement()
+
+        return IfStmt(condition, then_branch, else_branch)
 
     def expression_statement(self) -> Expression:
         expr = self.expression()
