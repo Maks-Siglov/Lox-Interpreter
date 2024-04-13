@@ -1,5 +1,14 @@
 import stmt
-from expression import Binary, Expr, Grouping, Literal, Unary, Var, Assign
+from expression import (
+    Binary,
+    Expr,
+    Grouping,
+    Literal,
+    Unary,
+    Var,
+    Assign,
+    Logical,
+)
 from plox_token import Token
 from stmt import Expression, Print, Stmt, Block, IfStmt
 from token_type import TokenType
@@ -77,7 +86,7 @@ class Parser:
         return self.assigment()
 
     def assigment(self) -> Expr:
-        expr = self.equality()
+        expr = self.or_condition()
 
         if self.match([TokenType.EQUAL]):
             value = self.assigment()
@@ -87,6 +96,26 @@ class Parser:
                 return Assign(token, value)
 
             raise ParserError(f"Invalid assigment target: {type(expr)}")
+
+        return expr
+
+    def or_condition(self) -> Expr:
+        expr = self.and_condition()
+
+        while self.match([TokenType.OR]):
+            operator = self.previous()
+            right = self.and_condition()
+            expr = Logical(expr, operator, right)
+
+        return expr
+
+    def and_condition(self) -> Expr:
+        expr = self.equality()
+
+        while self.match([TokenType.AND]):
+            operator = self.previous()
+            right = self.equality()
+            expr = Logical(expr, operator, right)
 
         return expr
 
