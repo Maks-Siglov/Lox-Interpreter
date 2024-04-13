@@ -39,9 +39,12 @@ class Lox:
 
         parser = Parser(tokens)
         statements = parser.parse()
-        print(statements)
+        print("statements")
+        for statement in statements:
+            print(statement.__dict__)
         interpreter = Interpreter()
         interpreter.interpret(statements)
+        print(interpreter.environment.__dict__)
 
     @staticmethod
     def read_file(path):

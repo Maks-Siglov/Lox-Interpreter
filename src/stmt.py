@@ -3,7 +3,8 @@ class Stmt:
     Program -> Declaration * EOF ;
     Declaration -> VarDecl | Statement :
     VarDecl -> "var" IDENTIFIER ( "=" expression )? ";" ;
-    Statement -> ExprStmt | PrintStmt ;
+    Statement -> ExprStmt | PrintStmt | Block ;
+    Block -> "{" Declaration* "}" ;
     ExprStmt -> expression ";" ;
     PrintStmt -> "print" expression ";" ;
     """
@@ -37,3 +38,11 @@ class Var(Stmt):
 
     def accept(self, visitor):
         return visitor.visit_var_stmt(self)
+
+
+class Block(Stmt):
+    def __init__(self, statements):
+        self.statements = statements
+
+    def accept(self, visitor):
+        return visitor.visit_block_stmt(self)

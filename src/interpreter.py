@@ -26,6 +26,23 @@ class Interpreter:
         print(self.stringify(value))
         return None
 
+    def visit_block_stmt(self, block_stmt: stmt.Block):
+        self.execute_block(
+            block_stmt.statements, Environment(enclosing=self.environment)
+        )
+        return None
+
+    def execute_block(
+            self, statements: list[stmt.Stmt], environment: Environment
+    ):
+        previous = self.environment
+        try:
+            self.environment = environment
+            for statement in statements:
+                self.execute(statement)
+        finally:
+            self.environment = previous
+
     def visit_var_stmt(self, statement: stmt.Var):
         value = None
         if statement.initializer is not None:
