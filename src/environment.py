@@ -18,4 +18,5 @@ class Environment:
             self.var_values[name] = value
         elif self.enclosing is not None:
             self.enclosing.assign(name, value)
-        raise RuntimeError(name, f"Undefined variable '{name}'.")
+        else:
+            raise RuntimeError(name, f"Undefined variable '{name}'.")

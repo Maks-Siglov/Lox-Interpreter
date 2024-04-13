@@ -96,7 +96,6 @@ class Interpreter:
             return -right
 
     def visit_binary_expr(self, binary_expr: expr.Binary):
-        print(type(binary_expr), binary_expr, binary_expr.__dict__)
         left = self.evaluate(binary_expr.left)
         right = self.evaluate(binary_expr.right)
 
