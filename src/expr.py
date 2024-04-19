@@ -14,6 +14,7 @@ class Expr:
     Term → Factor ( ( "-" | "+" ) Factor )* ;
     Factor → Unary ( ( "/" | "*" ) Unary )* ;
     Unary -> ("!" | "-")Unary | Primary;
+    call -> Primary ( "(" arguments? ")" )* ;
     Primary -> "true" | "false" | "nil"
         |  NUMBER | STRING
         | "(" expression ")"
@@ -86,3 +87,13 @@ class Logical(Expr):
 
     def accept(self, visitor):
         return visitor.visit_logical_expr(self)
+
+
+class Call(Expr):
+    def __init__(self, calle: Expr, paren: Token, arguments: list[Expr]):
+        self.calle = calle
+        self.paren = paren
+        self.arguments = arguments
+
+    def accept(self, visitor):
+        return visitor.visit_call_expr(self)
