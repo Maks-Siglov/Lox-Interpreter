@@ -14,7 +14,7 @@ class Expr:
     Term → Factor ( ( "-" | "+" ) Factor )* ;
     Factor → Unary ( ( "/" | "*" ) Unary )* ;
     Unary -> ("!" | "-")Unary | Primary;
-    call -> Primary ( "(" arguments? ")" )* ;
+    Call -> Primary ( "(" arguments? ")" )* ;
     Primary -> "true" | "false" | "nil"
         |  NUMBER | STRING
         | "(" expression ")"

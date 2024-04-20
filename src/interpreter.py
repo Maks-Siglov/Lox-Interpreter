@@ -1,5 +1,6 @@
 import expr
 import stmt
+from callable import PloxCallable, ClockCallable
 from environment import Environment
 from token_type import TokenType
 
@@ -142,6 +143,25 @@ class Interpreter:
             return float(left) * float(right)
 
         return None
+
+    def visit_call_expr(self, call_expr: expr.Call):
+        calle = self.evaluate(call_expr.calle)
+
+        arguments = []
+        for argument in call_expr.arguments:
+            arguments.append(self.evaluate(argument))
+
+        if not isinstance(PloxCallable, calle):
+            raise RuntimeError("Can only call functions and classes.")
+
+        function: PloxCallable = calle
+
+        if len(arguments) != function.arity():
+            raise RuntimeError(
+                f"Expected {function.arity()} arguments, "
+                f"but {len(arguments)} were given."
+            )
+        return function.call(self, arguments)
 
     def evaluate(self, expression: expr.Expr):
         return expression.accept(self)

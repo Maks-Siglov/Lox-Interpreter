@@ -21,7 +21,7 @@ class Stmt:
 
     def accept(self, visitor):
         raise NotImplementedError(
-            "accept method must be implemented by Expr subclasses"
+            "accept method must be implemented by Stmt subclasses"
         )
 
 
