@@ -129,7 +129,7 @@ class Scanner:
             if self.match("/"):
                 # Comment goes until the end of the line
                 # We don't call add_token(), because comments aren't meaningful
-                while self.peek() != "/n" and not self.is_at_end():
+                while self.peek() != "\n" and not self.is_at_end():
                     self.advance()
             else:
                 self.add_token(TokenType.SLASH)
@@ -138,7 +138,7 @@ class Scanner:
             # Ignore whitespace
             pass
 
-        elif c == "/n":
+        elif c == "\n":
             self.line += 1
 
         elif c == '"':
