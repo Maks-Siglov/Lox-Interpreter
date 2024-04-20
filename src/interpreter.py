@@ -31,7 +31,7 @@ class Interpreter:
         self.evaluate(statement.expr)
 
     def visit_function_stmt(self, statement: stmt.Function):
-        function = LoxFunction(statement)
+        function = LoxFunction(statement, self.environment)
         self.environment.define_var(statement.name.lexeme, function)
 
     def visit_print_stmt(self, statement: stmt.Print):

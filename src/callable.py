@@ -17,14 +17,15 @@ class PloxCallable(ABC):
 
 
 class LoxFunction(PloxCallable):
-    def __init__(self, declaration: stmt.Function):
+    def __init__(self, declaration: stmt.Function, closure: Environment):
         self.declaration = declaration
+        self.closure = closure
 
     def arity(self):
         return len(self.declaration.params)
 
     def call(self, interpreter, arguments: list):
-        environment = Environment(interpreter.globals)
+        environment = Environment(self.closure)
         for i in range(self.arity()):
             parameter_name = self.declaration.params[i].lexeme
             argument_value = arguments[i] if i < len(arguments) else None
