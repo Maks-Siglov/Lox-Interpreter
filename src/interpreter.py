@@ -7,7 +7,10 @@ from token_type import TokenType
 
 class Interpreter:
     def __init__(self):
-        self.environment = Environment()
+        self.globals = Environment()
+        self.environment = self.globals
+
+        self.globals.define_var("clock", ClockCallable())
 
     def interpret(self, statements: list[stmt.Stmt]):
         try:
