@@ -1,11 +1,8 @@
 import expr
 import stmt
+from exceptions import ParserError
 from plox_token import Token
 from token_type import TokenType
-
-
-class ParserError(RuntimeError):
-    pass
 
 
 class Parser:
@@ -68,6 +65,8 @@ class Parser:
     def statement(self) -> stmt.Stmt:
         if self.match([TokenType.PRINT]):
             return self.print_statement()
+        elif self.match([TokenType.RETURN]):
+            return self.return_statement()
         elif self.match([TokenType.WHILE]):
             return self.while_statement()
         elif self.match([TokenType.FOR]):
@@ -82,6 +81,15 @@ class Parser:
         value = self.expression()
         self.consume(TokenType.SEMICOLON, "Expect ';' after value.")
         return stmt.Print(value)
+
+    def return_statement(self):
+        keyword = self.previous()
+        value = None
+        if not self.check(TokenType.SEMICOLON):
+            value = self.expression()
+
+        self.consume(TokenType.SEMICOLON, "Expect ';' after value.")
+        return stmt.Return(keyword, value)
 
     def block_statement(self):
         statements = []

@@ -10,13 +10,19 @@ class Stmt:
     FunDecl -> "fun" Function ;
     Function → IDENTIFIER "(" Parameters? ")" block ;
     Parameters → IDENTIFIER ( "," IDENTIFIER )* ;
-    Statement -> ExprStmt | PrintStmt | Block | ifStmt | WhileStmt | ForStmt ;
-    ifStmt -> "if" "(" expression ")" statement
-        ( "else" statement )? ;
+    Statement -> ExprStmt
+                | PrintStmt
+                | Block
+                | ifStmt
+                | WhileStmt
+                | ForStmt
+                | ReturnStmt ;
+    ifStmt -> "if" "(" expression ")" statement ( "else" statement )? ;
     WhileStmt -> "while" "(" expression ")" statement ;
     ForStmt -> "for" "("
         ( varDecl | exprStmt | ";" ) expression? ";" expression?
         )" statement ;
+    ReturnStmt -> "return" expression? ";" ;
     Block -> "{" Declaration* "}" ;
     ExprStmt -> expression ";" ;
     PrintStmt -> "print" expression ";" ;
@@ -68,7 +74,7 @@ class IfStmt(Stmt):
         self.else_stmt = else_stmt
 
     def accept(self, visitor):
-        return visitor.self_if_stmt(self)
+        return visitor.visit_if_stmt(self)
 
 
 class While(Stmt):
@@ -88,3 +94,12 @@ class Function(Stmt):
 
     def accept(self, visitor):
         return visitor.visit_function_stmt(self)
+
+
+class Return(Stmt):
+    def __init__(self, keyword: Token, value: Expr):
+        self.keyword = keyword
+        self.value = value
+
+    def accept(self, visitor):
+        return visitor.visit_return_stmt(self)

@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 import stmt
 from environment import Environment
+from exceptions import Return
 
 
 class PloxCallable(ABC):
@@ -28,7 +29,11 @@ class LoxFunction(PloxCallable):
             parameter_name = self.declaration.params[i].lexeme
             argument_value = arguments[i] if i < len(arguments) else None
             environment.define_var(parameter_name, argument_value)
-        interpreter.execute_block(self.declaration.body, environment)
+        try:
+            interpreter.execute_block(self.declaration.body, environment)
+        except Return as return_value:
+            return return_value.value
+
         return None
 
     def __str__(self) -> str:

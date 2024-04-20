@@ -6,6 +6,7 @@ from callable import (
     PloxCallable
 )
 from environment import Environment
+from exceptions import Return
 from token_type import TokenType
 
 
@@ -33,10 +34,17 @@ class Interpreter:
         function = LoxFunction(statement)
         self.environment.define_var(statement.name.lexeme, function)
 
-    def visit_print_stmt(self, statement):
+    def visit_print_stmt(self, statement: stmt.Print):
         value = self.evaluate(statement.expr)
         print(self.stringify(value))
         return None
+
+    def visit_return_stmt(self, statement: stmt.Return):
+        value = None
+        if statement.value is not None:
+            value = self.evaluate(statement.value)
+
+        raise Return(value)
 
     def visit_if_stmt(self, statement: stmt.IfStmt):
         if self.is_truthy(self.evaluate(statement.condition)):
