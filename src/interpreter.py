@@ -1,6 +1,6 @@
 import expr
 import stmt
-from callable import PloxCallable, ClockCallable
+from callable import PloxCallable, ClockCallable, LoxFunction
 from environment import Environment
 from token_type import TokenType
 
@@ -24,6 +24,10 @@ class Interpreter:
 
     def visit_expression_stmt(self, statement: stmt.Expression):
         self.evaluate(statement.expr)
+
+    def visit_function_stmt(self, statement: stmt.Function):
+        function = LoxFunction(statement)
+        self.environment.define_var(statement.name.lexeme, function)
 
     def visit_print_stmt(self, statement):
         value = self.evaluate(statement.expr)
@@ -154,7 +158,7 @@ class Interpreter:
         for argument in call_expr.arguments:
             arguments.append(self.evaluate(argument))
 
-        if not isinstance(PloxCallable, calle):
+        if not isinstance(calle, PloxCallable):
             raise RuntimeError("Can only call functions and classes.")
 
         function: PloxCallable = calle

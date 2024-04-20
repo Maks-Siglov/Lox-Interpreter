@@ -20,11 +20,42 @@ class Parser:
         return statements
 
     def declaration(self):
+        if self.match([TokenType.FUN]):
+            return self.fun_declaration("function")
         if self.match([TokenType.VAR]):
             return self.var_declaration()
         return self.statement()
 
-    def var_declaration(self):
+    def fun_declaration(self, kind: str) -> stmt.Function:
+        name = self.consume(TokenType.IDENTIFIER, f"Expect {kind} name")
+
+        self.consume(TokenType.LEFT_PAREN, "Expect '(' for fun arguments")
+
+        parameters = []
+        if not self.check(TokenType.RIGHT_PAREN):
+            while True:
+                parameter = self.consume(
+                    TokenType.IDENTIFIER, "Expect parameter name."
+                )
+                parameters.append(parameter)
+
+                if len(parameters) >= 255:
+                    self.error(
+                        self.peek(), "Can't have more than 255 arguments."
+                    )
+
+                if not self.match([TokenType.COMMA]):
+                    break
+
+        self.consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters.")
+
+        self.consume(
+            TokenType.LEFT_BRACE, "Expect '{' before " + kind + " body."
+        )
+        body = self.block_statement()
+        return stmt.Function(name, parameters, body)
+
+    def var_declaration(self) -> stmt.Var:
         token = self.consume(TokenType.IDENTIFIER, "Expect variable name.")
 
         initializer = None
@@ -223,8 +254,10 @@ class Parser:
         arguments = []
         if not self.check(TokenType.RIGHT_PAREN):
 
-            while self.match([TokenType.COMMA]):
+            while True:
                 arguments.append(self.expression())
+                if not self.match([TokenType.COMMA]):
+                    break
                 if len(arguments) >= 255:
                     self.error(
                         self.peek(), "Can't have more than 255 arguments."

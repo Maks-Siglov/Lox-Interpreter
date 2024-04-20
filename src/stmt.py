@@ -5,8 +5,11 @@ from plox_token import Token
 class Stmt:
     """
     Program -> Declaration * EOF ;
-    Declaration -> VarDecl | Statement :
+    Declaration -> VarDecl | Statement | FunDecl:
     VarDecl -> "var" IDENTIFIER ( "=" expression )? ";" ;
+    FunDecl -> "fun" Function ;
+    Function → IDENTIFIER "(" Parameters? ")" block ;
+    Parameters → IDENTIFIER ( "," IDENTIFIER )* ;
     Statement -> ExprStmt | PrintStmt | Block | ifStmt | WhileStmt | ForStmt ;
     ifStmt -> "if" "(" expression ")" statement
         ( "else" statement )? ;
@@ -75,3 +78,13 @@ class While(Stmt):
 
     def accept(self, visitor):
         return visitor.visit_while_stmt(self)
+
+
+class Function(Stmt):
+    def __init__(self, name: Token, params: list[Token], body: list[Stmt]):
+        self.name = name
+        self.params = params
+        self.body = body
+
+    def accept(self, visitor):
+        return visitor.visit_function_stmt(self)
