@@ -1,5 +1,7 @@
+import time
 from abc import ABC, abstractmethod
 
+import stmt
 from environment import Environment
 
 
@@ -14,24 +16,22 @@ class PloxCallable(ABC):
 
 
 class LoxFunction(PloxCallable):
-    def __init__(self, declaration):
+    def __init__(self, declaration: stmt.Function):
         self.declaration = declaration
 
     def arity(self):
         return len(self.declaration.params)
 
-    def call(self, interpreter, arguments):
-
+    def call(self, interpreter, arguments: list):
         environment = Environment(interpreter.globals)
-        for i in range(len(self.declaration.params)):
+        for i in range(self.arity()):
             parameter_name = self.declaration.params[i].lexeme
             argument_value = arguments[i] if i < len(arguments) else None
             environment.define_var(parameter_name, argument_value)
-        interpreter.execute_block(self.declaration.body.statements, environment)
+        interpreter.execute_block(self.declaration.body, environment)
         return None
 
-
-    def __str__(self):
+    def __str__(self) -> str:
         return f"<{self.declaration.name.lexeme}>"
 
 
@@ -40,7 +40,6 @@ class ClockCallable(PloxCallable):
         return 0
 
     def call(self, interpreter, arguments):
-        import time
         return time.time()
 
     def __str__(self):

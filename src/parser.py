@@ -53,7 +53,7 @@ class Parser:
             TokenType.LEFT_BRACE, "Expect '{' before " + kind + " body."
         )
         body = self.block_statement()
-        return stmt.Function(name, parameters, body)
+        return stmt.Function(name, parameters, body.statements)
 
     def var_declaration(self) -> stmt.Var:
         token = self.consume(TokenType.IDENTIFIER, "Expect variable name.")

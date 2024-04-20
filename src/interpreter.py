@@ -1,6 +1,10 @@
 import expr
 import stmt
-from callable import PloxCallable, ClockCallable, LoxFunction
+from callable import (
+    ClockCallable,
+    LoxFunction,
+    PloxCallable
+)
 from environment import Environment
 from token_type import TokenType
 
