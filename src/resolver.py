@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 import expr
 import stmt
+from exceptions import ResolveError
 from plox_token import Token
 
 if TYPE_CHECKING:
@@ -9,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class Resolver:
-    def __init__(self, interpreter: 'Interpreter'):
+    def __init__(self, interpreter: "Interpreter"):
         self.interpreter = interpreter
         self.scopes = []
 
@@ -73,10 +74,13 @@ class Resolver:
         self.resolve_function(function_stmt)
 
     def visit_var_expr(self, expression: expr.Var):
-        if self.scopes and self.scopes[-1].get(expression.token.lexeme) == False:
-            print(
+        if (
+            self.scopes
+            and self.scopes[-1].get(expression.token.lexeme) is False
+        ):
+            self.error(
                 expression.token,
-                "Can't read local variable in its own initializer."
+                "Can't read local variable in its own initializer.",
             )
         self.resolve_local(expression, expression.token)
 
@@ -84,3 +88,7 @@ class Resolver:
         self.resolve_expression(assign_expr.value)
         self.resolve_local(assign_expr, assign_expr.name)
 
+    @staticmethod
+    def error(token: Token, message: str):
+        msg = f"Error: {message}, token: {token}"
+        raise ResolveError(msg)
