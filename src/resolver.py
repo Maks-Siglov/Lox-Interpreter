@@ -88,6 +88,50 @@ class Resolver:
         self.resolve_expression(assign_expr.value)
         self.resolve_local(assign_expr, assign_expr.name)
 
+    def visit_expression_stmt(self, expression_stmt: stmt.Expression):
+        self.resolve_expression(expression_stmt.expr)
+
+    def visit_if_stmt(self, if_stmt: stmt.IfStmt):
+        self.resolve_expression(if_stmt.condition)
+        self.resolve_statement(if_stmt.then_stmt)
+        if if_stmt.else_stmt is not None:
+            self.resolve_statement(if_stmt.else_stmt)
+
+    def visit_print_stmt(self, print_stmt: stmt.Print):
+        self.resolve_expression(print_stmt.expr)
+
+    def visit_return_stmt(self, return_stmt: stmt.Return):
+        if return_stmt.value is not None:
+            self.resolve_expression(return_stmt.value)
+
+    def visit_while_stmt(self, while_stmt: stmt.While):
+        self.resolve_expression(while_stmt.condition)
+        self.resolve_statement(while_stmt.body)
+
+    def visit_binary_expr(self, binary_expr: expr.Binary):
+        self.resolve_expression(binary_expr.left)
+        self.resolve_expression(binary_expr.right)
+
+    def visit_call_expr(self, call_expr: expr.Call):
+        self.resolve_expression(call_expr.calle)
+
+        for argument in call_expr.arguments:
+            self.resolve_expression(argument)
+
+    def visit_grouping_expr(self, grouping_expr: expr.Grouping):
+        self.resolve_expression(grouping_expr.expr)
+
+    def visit_literal_expr(self, literal_expr: expr.Literal):
+        return
+
+    def visit_logical_expr(self, logical_expr: expr.Logical):
+        self.resolve_expression(logical_expr.left)
+        self.resolve_expression(logical_expr.right)
+
+    def visit_unary_expr(self, unary_expr: expr.Unary):
+        self.resolve_expression(unary_expr.right)
+
+
     @staticmethod
     def error(token: Token, message: str):
         msg = f"Error: {message}, token: {token}"
