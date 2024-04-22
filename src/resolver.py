@@ -151,6 +151,10 @@ class Resolver:
     def visit_get_expr(self, get_expr: expr.Get):
         self.resolve_expression(get_expr.expression)
 
+    def visit_set_expr(self, set_expr: expr.Set):
+        self.resolve_expression(set_expr.value)
+        self.resolve_expression(set_expr.expression)
+
     def visit_grouping_expr(self, grouping_expr: expr.Grouping):
         self.resolve_expression(grouping_expr.expr)
 

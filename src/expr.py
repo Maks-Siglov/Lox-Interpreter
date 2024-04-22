@@ -6,7 +6,7 @@ from plox_token import Token
 class Expr:
     """
     Expression -> Assignment ;
-    assignment -> IDENTIFIER "=" Assignment | Equality ;
+    assignment -> ( Call ".")? IDENTIFIER "=" Assignment | Equality ;
     Logic_or → Logic_and ( "or" Logic_and )* ;
     Logic_and → Equality ( "and" Equality )* ;
     Equality -> Comparison ( ( "!=" | "==" ) Comparison )* ;
@@ -106,3 +106,13 @@ class Get(Expr):
 
     def accept(self, visitor):
         return visitor.visit_get_expr(self)
+
+
+class Set(Expr):
+    def __init__(self, expression: Expr, name: Token, value: Expr):
+        self.expression = expression
+        self.name = name
+        self.value = value
+
+    def accept(self, visitor):
+        return visitor.visit_set_expr(self)

@@ -183,6 +183,9 @@ class Parser:
             if isinstance(expression, expr.Var):
                 token = expression.token
                 return expr.Assign(token, value)
+            elif isinstance(expression, expr.Get):
+                get = expression
+                return expr.Set(get.expression, get.name, value)
 
             raise ParserError(f"Invalid assigment target: {type(expression)}")
 

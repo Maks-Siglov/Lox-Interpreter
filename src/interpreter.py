@@ -209,10 +209,20 @@ class Interpreter:
         return function.call(self, arguments)
 
     def visit_get_expr(self, get_expr: expr.Get):
-        expression = self.evaluate(get_expr.expression)
-        if isinstance(expression, LoxInstance):
-            return expression.get(expression.name)
-        raise RuntimeError(expression.name, "Only instances have properties.")
+        obj = self.evaluate(get_expr.expression)
+        if isinstance(obj, LoxInstance):
+            return obj.get(get_expr.name)
+        raise RuntimeError(obj.name, "Only instances have properties.")
+
+    def visit_set_expr(self, set_expr: expr.Set):
+        obj = self.evaluate(set_expr.expression)
+
+        if not isinstance(obj, LoxInstance):
+            RuntimeError(set_expr.name, "Only instances have fields.")
+
+        value = self.evaluate(set_expr.value)
+        obj.set(set_expr.name, value)
+        return value
 
     def evaluate(self, expression: expr.Expr):
         return expression.accept(self)
