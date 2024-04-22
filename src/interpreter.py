@@ -8,6 +8,7 @@ from callable import (
 from environment import Environment
 from exceptions import Return
 from lox_class import LoxClass
+from lox_instance import LoxInstance
 from plox_token import Token
 from token_type import TokenType
 
@@ -206,6 +207,12 @@ class Interpreter:
                 f"but {len(arguments)} were given."
             )
         return function.call(self, arguments)
+
+    def visit_get_expr(self, get_expr: expr.Get):
+        expression = self.evaluate(get_expr.expression)
+        if isinstance(expression, LoxInstance):
+            return expression.get(expression.name)
+        raise RuntimeError(expression.name, "Only instances have properties.")
 
     def evaluate(self, expression: expr.Expr):
         return expression.accept(self)

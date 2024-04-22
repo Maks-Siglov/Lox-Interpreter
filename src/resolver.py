@@ -148,6 +148,9 @@ class Resolver:
         for argument in call_expr.arguments:
             self.resolve_expression(argument)
 
+    def visit_get_expr(self, get_expr: expr.Get):
+        self.resolve_expression(get_expr.expression)
+
     def visit_grouping_expr(self, grouping_expr: expr.Grouping):
         self.resolve_expression(grouping_expr.expr)
 

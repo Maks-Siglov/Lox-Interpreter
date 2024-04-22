@@ -14,7 +14,7 @@ class Expr:
     Term → Factor ( ( "-" | "+" ) Factor )* ;
     Factor → Unary ( ( "/" | "*" ) Unary )* ;
     Unary -> ("!" | "-")Unary | Primary;
-    Call -> Primary ( "(" arguments? ")" )* ;
+    Call -> Primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
     Primary -> "true" | "false" | "nil"
         |  NUMBER | STRING
         | "(" expression ")"
@@ -97,3 +97,12 @@ class Call(Expr):
 
     def accept(self, visitor):
         return visitor.visit_call_expr(self)
+
+
+class Get(Expr):
+    def __init__(self, expression: Expr, name: Token):
+        self.expression = expression
+        self.name = name
+
+    def accept(self, visitor):
+        return visitor.visit_get_expr(self)
