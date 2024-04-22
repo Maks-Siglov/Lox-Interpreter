@@ -7,6 +7,7 @@ from callable import (
 )
 from environment import Environment
 from exceptions import Return
+from plox_token import Token
 from token_type import TokenType
 
 
@@ -14,6 +15,7 @@ class Interpreter:
     def __init__(self):
         self.globals = Environment()
         self.environment = self.globals
+        self.locals: dict[expr, int] = {}
 
         self.globals.define_var("clock", ClockCallable())
 
@@ -26,6 +28,15 @@ class Interpreter:
 
     def execute(self, statement: stmt.Stmt):
         statement.accept(self)
+
+    def resolve(self, expression: expr.Expr, depth: int):
+        self.locals[expression] = depth
+
+    def look_up_var(self, name: Token, var_expr: expr.Var):
+        distance = self.locals.get(var_expr)
+        if distance is not None:
+            return self.environment.get_at(distance, name.lexeme)
+        return self.globals.get_var(name)
 
     def visit_expression_stmt(self, statement: stmt.Expression):
         self.evaluate(statement.expr)
@@ -82,11 +93,19 @@ class Interpreter:
             self.execute(statement.body)
 
     def visit_var_expr(self, var_expr: expr.Var):
-        return self.environment.get_var(var_expr.token.lexeme)
+        return self.look_up_var(var_expr.token, var_expr)
+        # return self.environment.get_var(var_expr.token.lexeme)
 
     def visit_assign_expr(self, assign_expr: expr.Assign):
         value = self.evaluate(assign_expr.value)
-        self.environment.assign(assign_expr.name.lexeme, value)
+        # self.environment.assign(assign_expr.name.lexeme, value)
+
+        distance = self.locals[assign_expr]
+        if distance is not None:
+            self.environment.assign_at(distance, assign_expr.name, value)
+        else:
+            self.globals.assign(assign_expr.name, value)
+
         return value
 
     @staticmethod

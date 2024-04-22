@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import TYPE_CHECKING
 
 import expr
@@ -9,19 +10,27 @@ if TYPE_CHECKING:
     from interpreter import Interpreter
 
 
+class FunctionType(Enum):
+    NONE = 0
+    FUNCTION = 1
+
+
 class Resolver:
     def __init__(self, interpreter: "Interpreter"):
         self.interpreter = interpreter
         self.scopes = []
+        self.current_function = FunctionType.NONE
 
     def resolve(self, statements: list[stmt.Stmt]):
         for statement in statements:
             self.resolve_statement(statement)
 
     def resolve_statement(self, statement: stmt.Stmt):
+        # print(statement)
         statement.accept(self)
 
     def resolve_expression(self, expression: expr.Expr):
+        # print(expression)
         expression.accept(self)
 
     def begin_scope(self):
@@ -34,6 +43,12 @@ class Resolver:
     def declare(self, name: Token):
         if self.scopes:
             scope = self.scopes[-1]
+
+            if name.lexeme in scope:
+                self.error(
+                    name, "Already variable with this name in this scope."
+                )
+
             scope[name.lexeme] = False
 
     def define(self, name: Token):
@@ -41,19 +56,26 @@ class Resolver:
             self.scopes[-1][name.lexeme] = True
 
     def resolve_local(self, expression, name):
+        # print(self.scopes)
         for i in range(len(self.scopes) - 1, -1, -1):
             if name.lexeme in self.scopes[i]:
                 self.interpreter.resolve(expression, len(self.scopes) - 1 - i)
                 return
 
-    def resolve_function(self, function_stmt: stmt.Function):
+    def resolve_function(
+            self, function_stmt: stmt.Function, func_type: FunctionType
+    ):
+        enclosing_function = self.current_function
+        self.current_function = func_type
         self.begin_scope()
+
         for param in function_stmt.params:
             self.declare(param)
             self.define(param)
 
         self.resolve(function_stmt.body)
         self.end_scope()
+        self.current_function = enclosing_function
 
     def visit_block_stmt(self, block_stmt: stmt.Block):
         self.begin_scope()
@@ -62,7 +84,7 @@ class Resolver:
 
     def visit_var_stmt(self, var_stmt: stmt.Var):
         self.declare(var_stmt.name)
-        if not var_stmt.initializer is None:
+        if var_stmt.initializer is not None:
             self.resolve_expression(var_stmt.initializer)
 
         self.define(var_stmt.name)
@@ -71,7 +93,7 @@ class Resolver:
         self.declare(function_stmt.name)
         self.define(function_stmt.name)
 
-        self.resolve_function(function_stmt)
+        self.resolve_function(function_stmt, FunctionType.FUNCTION)
 
     def visit_var_expr(self, expression: expr.Var):
         if (
@@ -101,6 +123,11 @@ class Resolver:
         self.resolve_expression(print_stmt.expr)
 
     def visit_return_stmt(self, return_stmt: stmt.Return):
+        if self.current_function == FunctionType.NONE:
+            self.error(
+                return_stmt.keyword, "Can't return from top-level code."
+            )
+
         if return_stmt.value is not None:
             self.resolve_expression(return_stmt.value)
 
@@ -130,7 +157,6 @@ class Resolver:
 
     def visit_unary_expr(self, unary_expr: expr.Unary):
         self.resolve_expression(unary_expr.right)
-
 
     @staticmethod
     def error(token: Token, message: str):

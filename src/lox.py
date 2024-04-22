@@ -2,6 +2,7 @@ import sys
 from parser import Parser
 
 from interpreter import Interpreter
+from resolver import Resolver
 from scanner import Scanner
 
 
@@ -39,11 +40,16 @@ class Lox:
 
         parser = Parser(tokens)
         statements = parser.parse()
-        print("statements")
-        for statement in statements:
-            print(statement, statement.__dict__)
+
+        # print("statements")
+        # for statement in statements:
+        #     print(statement, statement.__dict__)
 
         interpreter = Interpreter()
+
+        resolver = Resolver(interpreter)
+        resolver.resolve(statements)
+
         interpreter.interpret(statements)
         # print(interpreter.environment.__dict__)
 
