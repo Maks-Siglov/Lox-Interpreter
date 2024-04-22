@@ -1,9 +1,13 @@
 import time
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Any
 
 import stmt
 from environment import Environment
 from exceptions import Return
+
+if TYPE_CHECKING:
+    from interpreter import Interpreter
 
 
 class PloxCallable(ABC):
@@ -12,7 +16,7 @@ class PloxCallable(ABC):
         pass
 
     @abstractmethod
-    def call(self, interpreter, arguments: list):
+    def call(self, interpreter: "Interpreter", arguments: list[Any]) -> Any:
         pass
 
 
@@ -24,7 +28,7 @@ class LoxFunction(PloxCallable):
     def arity(self):
         return len(self.declaration.params)
 
-    def call(self, interpreter, arguments: list):
+    def call(self, interpreter: "Interpreter", arguments: list[Any]):
         environment = Environment(self.closure)
         for i in range(self.arity()):
             parameter_name = self.declaration.params[i].lexeme
@@ -45,7 +49,7 @@ class ClockCallable(PloxCallable):
     def arity(self):
         return 0
 
-    def call(self, interpreter, arguments):
+    def call(self, interpreter: "Interpreter", arguments: list[Any]) -> float:
         return time.time()
 
     def __str__(self):

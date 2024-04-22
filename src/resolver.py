@@ -63,7 +63,7 @@ class Resolver:
                 return
 
     def resolve_function(
-            self, function_stmt: stmt.Function, func_type: FunctionType
+        self, function_stmt: stmt.Function, func_type: FunctionType
     ):
         enclosing_function = self.current_function
         self.current_function = func_type
