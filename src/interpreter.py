@@ -7,6 +7,7 @@ from callable import (
 )
 from environment import Environment
 from exceptions import Return
+from lox_class import LoxClass
 from plox_token import Token
 from token_type import TokenType
 
@@ -44,6 +45,11 @@ class Interpreter:
     def visit_function_stmt(self, statement: stmt.Function):
         function = LoxFunction(statement, self.environment)
         self.environment.define_var(statement.name.lexeme, function)
+
+    def visit_class_stmt(self, statement: stmt.Class):
+        self.environment.define_var(statement.name.lexeme, None)
+        klass = LoxClass(statement.name.lexeme)
+        self.environment.assign(statement.name, klass)
 
     def visit_print_stmt(self, statement: stmt.Print):
         value = self.evaluate(statement.expr)

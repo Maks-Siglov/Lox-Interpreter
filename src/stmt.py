@@ -1,3 +1,4 @@
+import expr
 from expr import Expr
 from plox_token import Token
 
@@ -5,10 +6,14 @@ from plox_token import Token
 class Stmt:
     """
     Program -> Declaration * EOF ;
-    Declaration -> VarDecl | Statement | FunDecl:
+    Declaration -> VarDecl
+                    | Statement
+                    | FunDecl
+                    | ClassDecl ;
     VarDecl -> "var" IDENTIFIER ( "=" expression )? ";" ;
     FunDecl -> "fun" Function ;
     Function → IDENTIFIER "(" Parameters? ")" block ;
+    ClassDecl -> "class" IDENTIFIER "{" function* "}" ;
     Parameters → IDENTIFIER ( "," IDENTIFIER )* ;
     Statement -> ExprStmt
                 | PrintStmt
@@ -103,3 +108,15 @@ class Return(Stmt):
 
     def accept(self, visitor):
         return visitor.visit_return_stmt(self)
+
+
+class Class(Stmt):
+    def __init__(
+            self, name: Token, methods: list[Function]
+    ):
+        self.name = name
+        # self.superclass = superclass
+        self.methods = methods
+
+    def accept(self, visitor):
+        return visitor.visit_class_stmt(self)

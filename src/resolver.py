@@ -56,7 +56,6 @@ class Resolver:
             self.scopes[-1][name.lexeme] = True
 
     def resolve_local(self, expression, name):
-        # print(self.scopes)
         for i in range(len(self.scopes) - 1, -1, -1):
             if name.lexeme in self.scopes[i]:
                 self.interpreter.resolve(expression, len(self.scopes) - 1 - i)
@@ -94,6 +93,10 @@ class Resolver:
         self.define(function_stmt.name)
 
         self.resolve_function(function_stmt, FunctionType.FUNCTION)
+
+    def visit_class_stmt(self, class_stmt: stmt.Class) -> None:
+        self.declare(class_stmt.name)
+        self.define(class_stmt.name)
 
     def visit_var_expr(self, expression: expr.Var):
         if (
