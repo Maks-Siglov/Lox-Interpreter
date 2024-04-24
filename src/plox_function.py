@@ -13,9 +13,10 @@ if TYPE_CHECKING:
 
 class LoxFunction(PloxCallable):
     def __init__(
-            self, declaration: stmt.Function,
-            closure: Environment,
-            is_initializer: bool
+        self,
+        declaration: stmt.Function,
+        closure: Environment,
+        is_initializer: bool,
     ):
         self.declaration = declaration
         self.closure = closure

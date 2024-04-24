@@ -110,9 +110,7 @@ class Return(Stmt):
 
 
 class Class(Stmt):
-    def __init__(
-            self, name: Token, methods: list[Function]
-    ):
+    def __init__(self, name: Token, methods: list[Function]):
         self.name = name
         self.methods = methods
 

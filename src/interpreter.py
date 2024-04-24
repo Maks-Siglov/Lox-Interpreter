@@ -1,9 +1,6 @@
 import expr
 import stmt
-from callable import (
-    ClockCallable,
-    PloxCallable
-)
+from callable import ClockCallable, PloxCallable
 from environment import Environment
 from exceptions import ReturnError
 from plox_class import LoxClass
