@@ -4,6 +4,7 @@ import expr
 import stmt
 from callable import FunctionType
 from exceptions import ResolveError
+from lox_class import ClassType
 from plox_token import Token
 
 if TYPE_CHECKING:
@@ -15,6 +16,7 @@ class Resolver:
         self.interpreter = interpreter
         self.scopes = []
         self.current_function = FunctionType.NONE
+        self.current_class = ClassType.NONE
 
     def resolve(self, statements: list[stmt.Stmt]):
         for statement in statements:
@@ -90,6 +92,9 @@ class Resolver:
         self.resolve_function(function_stmt, FunctionType.FUNCTION)
 
     def visit_class_stmt(self, class_stmt: stmt.Class) -> None:
+        enclosing_class = self.current_class
+        self.current_class = ClassType.CLASS
+
         self.declare(class_stmt.name)
         self.define(class_stmt.name)
 
@@ -99,6 +104,8 @@ class Resolver:
         for method in class_stmt.methods:
             declaration = FunctionType.METHOD
             self.resolve_function(method, declaration)
+
+        self.current_class = enclosing_class
 
         self.end_scope()
 
@@ -160,6 +167,10 @@ class Resolver:
         self.resolve_expression(set_expr.expression)
 
     def visit_self_expr(self, self_expr: expr.Self) -> None:
+        if self.current_class is ClassType.NONE:
+            self.error(
+                self_expr.keyword, "Can't use 'self' outside of a class."
+            )
         self.resolve_local(self_expr, self_expr.keyword)
 
     def visit_grouping_expr(self, grouping_expr: expr.Grouping):

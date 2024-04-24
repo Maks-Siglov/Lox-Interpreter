@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import TYPE_CHECKING
 
 from callable import PloxCallable, LoxFunction
@@ -25,3 +26,8 @@ class LoxClass(PloxCallable):
 
     def __str__(self) -> str:
         return self.name
+
+
+class ClassType(Enum):
+    NONE = 0
+    CLASS = 1
