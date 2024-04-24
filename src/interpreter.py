@@ -2,13 +2,13 @@ import expr
 import stmt
 from callable import (
     ClockCallable,
-    LoxFunction,
     PloxCallable
 )
 from environment import Environment
-from exceptions import Return
-from lox_class import LoxClass
-from lox_instance import LoxInstance
+from exceptions import ReturnError
+from plox_class import LoxClass
+from plox_function import LoxFunction
+from plox_instance import LoxInstance
 from plox_token import Token
 from token_type import TokenType
 
@@ -44,7 +44,7 @@ class Interpreter:
         self.evaluate(statement.expr)
 
     def visit_function_stmt(self, statement: stmt.Function):
-        function = LoxFunction(statement, self.environment)
+        function = LoxFunction(statement, self.environment, False)
         self.environment.define_var(statement.name.lexeme, function)
 
     def visit_class_stmt(self, statement: stmt.Class):
@@ -52,7 +52,8 @@ class Interpreter:
 
         methods = {}
         for method in statement.methods:
-            function = LoxFunction(method, self.environment)
+            is_init: bool = method.name.lexeme == "init"
+            function = LoxFunction(method, self.environment, is_init)
             methods[method.name.lexeme] = function
 
         klass = LoxClass(statement.name.lexeme, methods)
@@ -68,7 +69,7 @@ class Interpreter:
         if statement.value is not None:
             value = self.evaluate(statement.value)
 
-        raise Return(value)
+        raise ReturnError(value)
 
     def visit_if_stmt(self, statement: stmt.IfStmt):
         if self.is_truthy(self.evaluate(statement.condition)):

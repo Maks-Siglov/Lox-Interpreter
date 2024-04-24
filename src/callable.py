@@ -1,12 +1,6 @@
 import time
 from abc import ABC, abstractmethod
-from enum import Enum
 from typing import TYPE_CHECKING, Any
-
-import stmt
-from environment import Environment
-from exceptions import Return
-from lox_instance import LoxInstance
 
 if TYPE_CHECKING:
     from interpreter import Interpreter
@@ -22,34 +16,6 @@ class PloxCallable(ABC):
         pass
 
 
-class LoxFunction(PloxCallable):
-    def __init__(self, declaration: stmt.Function, closure: Environment):
-        self.declaration = declaration
-        self.closure = closure
-
-    def arity(self):
-        return len(self.declaration.params)
-
-    def call(self, interpreter: "Interpreter", arguments: list[Any]):
-        environment = Environment(self.closure)
-        for i in range(self.arity()):
-            parameter_name = self.declaration.params[i].lexeme
-            argument_value = arguments[i] if i < len(arguments) else None
-            environment.define_var(parameter_name, argument_value)
-        try:
-            interpreter.execute_block(self.declaration.body, environment)
-        except Return as return_value:
-            return return_value.value
-
-    def bind(self, instance: LoxInstance) -> "LoxFunction":
-        environment = Environment(self.closure)
-        environment.define_var("self", instance)
-        return LoxFunction(self.declaration, environment)
-
-    def __str__(self) -> str:
-        return f"<{self.declaration.name.lexeme}>"
-
-
 class ClockCallable(PloxCallable):
     def arity(self):
         return 0
@@ -59,9 +25,3 @@ class ClockCallable(PloxCallable):
 
     def __str__(self):
         return "<native fn>"
-
-
-class FunctionType(Enum):
-    NONE = 0
-    FUNCTION = 1
-    METHOD = 2

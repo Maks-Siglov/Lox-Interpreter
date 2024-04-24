@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from plox_token import Token
 
 if TYPE_CHECKING:
-    from lox_class import LoxClass
+    from plox_class import LoxClass
 
 
 class LoxInstance:

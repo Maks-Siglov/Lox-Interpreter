@@ -2,9 +2,9 @@ from typing import TYPE_CHECKING
 
 import expr
 import stmt
-from callable import FunctionType
 from exceptions import ResolveError
-from lox_class import ClassType
+from plox_class import ClassType
+from plox_function import FunctionType
 from plox_token import Token
 
 if TYPE_CHECKING:
@@ -103,6 +103,9 @@ class Resolver:
 
         for method in class_stmt.methods:
             declaration = FunctionType.METHOD
+            if method.name.lexeme == "init":
+                declaration = FunctionType.INITIALIZER
+
             self.resolve_function(method, declaration)
 
         self.current_class = enclosing_class
@@ -141,6 +144,8 @@ class Resolver:
             self.error(
                 return_stmt.keyword, "Can't return from top-level code."
             )
+        elif self.current_function == FunctionType.INITIALIZER:
+            self.error(return_stmt.keyword, "Can't return from initializer.")
 
         if return_stmt.value is not None:
             self.resolve_expression(return_stmt.value)

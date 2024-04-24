@@ -2,7 +2,7 @@ class ParserError(RuntimeError):
     pass
 
 
-class Return(RuntimeError):
+class ReturnError(RuntimeError):
     def __init__(self, value):
         super().__init__()
         self.value = value
