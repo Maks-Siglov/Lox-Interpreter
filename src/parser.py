@@ -269,15 +269,15 @@ class Parser:
         expression = self.primary()
 
         while True:
-            if not self.match(TokenType.LEFT_PAREN):
-                break
+            if self.match(TokenType.LEFT_PAREN):
+                expression = self.finish_call(expression)
             elif self.match(TokenType.DOT):
                 name = self.consume(
                     TokenType.IDENTIFIER, "Expect property name after '.'."
                 )
                 expression = expr.Get(expression, name)
             else:
-                expression = self.finish_call(expression)
+                break
 
         return expression
 

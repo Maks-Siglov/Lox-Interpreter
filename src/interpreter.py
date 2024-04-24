@@ -49,7 +49,13 @@ class Interpreter:
 
     def visit_class_stmt(self, statement: stmt.Class):
         self.environment.define_var(statement.name.lexeme, None)
-        klass = LoxClass(statement.name.lexeme)
+
+        methods = {}
+        for method in statement.methods:
+            function = LoxFunction(method, self.environment)
+            methods[method.name.lexeme] = function
+
+        klass = LoxClass(statement.name.lexeme, methods)
         self.environment.assign(statement.name, klass)
 
     def visit_print_stmt(self, statement: stmt.Print):

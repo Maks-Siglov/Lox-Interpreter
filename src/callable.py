@@ -1,5 +1,6 @@
 import time
 from abc import ABC, abstractmethod
+from enum import Enum
 from typing import TYPE_CHECKING, Any
 
 import stmt
@@ -54,3 +55,9 @@ class ClockCallable(PloxCallable):
 
     def __str__(self):
         return "<native fn>"
+
+
+class FunctionType(Enum):
+    NONE = 0
+    FUNCTION = 1
+    METHOD = 2

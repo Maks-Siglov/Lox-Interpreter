@@ -1,4 +1,3 @@
-import expr
 from expr import Expr
 from plox_token import Token
 
@@ -115,7 +114,6 @@ class Class(Stmt):
             self, name: Token, methods: list[Function]
     ):
         self.name = name
-        # self.superclass = superclass
         self.methods = methods
 
     def accept(self, visitor):

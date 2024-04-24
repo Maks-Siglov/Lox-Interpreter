@@ -1,18 +1,13 @@
-from enum import Enum
 from typing import TYPE_CHECKING
 
 import expr
 import stmt
+from callable import FunctionType
 from exceptions import ResolveError
 from plox_token import Token
 
 if TYPE_CHECKING:
     from interpreter import Interpreter
-
-
-class FunctionType(Enum):
-    NONE = 0
-    FUNCTION = 1
 
 
 class Resolver:
@@ -97,6 +92,11 @@ class Resolver:
     def visit_class_stmt(self, class_stmt: stmt.Class) -> None:
         self.declare(class_stmt.name)
         self.define(class_stmt.name)
+
+        for method in class_stmt.methods:
+            declaration = FunctionType.METHOD
+            self.resolve_function(method, declaration)
+        return None
 
     def visit_var_expr(self, expression: expr.Var):
         if (
