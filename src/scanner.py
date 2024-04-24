@@ -16,7 +16,7 @@ class Scanner:
         "print": TokenType.PRINT,
         "return": TokenType.RETURN,
         "super": TokenType.SUPER,
-        "this": TokenType.THIS,
+        "self": TokenType.SELF,
         "true": TokenType.TRUE,
         "var": TokenType.VAR,
         "while": TokenType.WHILE,

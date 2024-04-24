@@ -34,7 +34,7 @@ class Interpreter:
     def resolve(self, expression: expr.Expr, depth: int):
         self.locals[expression] = depth
 
-    def look_up_var(self, name: Token, var_expr: expr.Var):
+    def look_up_var(self, name: Token, var_expr: expr.Var | expr.Self):
         distance = self.locals.get(var_expr)
         if distance is not None:
             return self.environment.get_at(distance, name.lexeme)
@@ -229,6 +229,9 @@ class Interpreter:
         value = self.evaluate(set_expr.value)
         obj.set(set_expr.name, value)
         return value
+
+    def visit_self_expr(self, self_expr: expr.Self):
+        return self.look_up_var(self_expr.keyword, self_expr)
 
     def evaluate(self, expression: expr.Expr):
         return expression.accept(self)

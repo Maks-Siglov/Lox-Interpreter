@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any
 import stmt
 from environment import Environment
 from exceptions import Return
+from lox_instance import LoxInstance
 
 if TYPE_CHECKING:
     from interpreter import Interpreter
@@ -40,7 +41,10 @@ class LoxFunction(PloxCallable):
         except Return as return_value:
             return return_value.value
 
-        return None
+    def bind(self, instance: LoxInstance) -> "LoxFunction":
+        environment = Environment(self.closure)
+        environment.define_var("self", instance)
+        return LoxFunction(self.declaration, environment)
 
     def __str__(self) -> str:
         return f"<{self.declaration.name.lexeme}>"

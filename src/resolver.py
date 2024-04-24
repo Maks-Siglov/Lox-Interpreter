@@ -93,10 +93,14 @@ class Resolver:
         self.declare(class_stmt.name)
         self.define(class_stmt.name)
 
+        self.begin_scope()
+        self.scopes[-1]["self"] = True
+
         for method in class_stmt.methods:
             declaration = FunctionType.METHOD
             self.resolve_function(method, declaration)
-        return None
+
+        self.end_scope()
 
     def visit_var_expr(self, expression: expr.Var):
         if (
@@ -154,6 +158,9 @@ class Resolver:
     def visit_set_expr(self, set_expr: expr.Set):
         self.resolve_expression(set_expr.value)
         self.resolve_expression(set_expr.expression)
+
+    def visit_self_expr(self, self_expr: expr.Self) -> None:
+        self.resolve_local(self_expr, self_expr.keyword)
 
     def visit_grouping_expr(self, grouping_expr: expr.Grouping):
         self.resolve_expression(grouping_expr.expr)

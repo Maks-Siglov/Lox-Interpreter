@@ -44,7 +44,7 @@ class TokenType(Enum):
     PRINT = 32
     RETURN = 33
     SUPER = 34
-    THIS = 35
+    SELF = 35
     TRUE = 36
     VAR = 37
     WHILE = 38

@@ -116,3 +116,11 @@ class Set(Expr):
 
     def accept(self, visitor):
         return visitor.visit_set_expr(self)
+
+
+class Self(Expr):
+    def __init__(self, keyword: Token):
+        self.keyword = keyword
+
+    def accept(self, visitor):
+        return visitor.visit_self_expr(self)

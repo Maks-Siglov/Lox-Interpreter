@@ -315,6 +315,9 @@ class Parser:
             self.consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.")
             return expr.Grouping(expression)
 
+        elif self.match(TokenType.SELF):
+            return expr.Self(self.previous())
+
         elif self.match(TokenType.IDENTIFIER):
             return expr.Var(self.previous())
 
