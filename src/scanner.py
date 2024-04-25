@@ -181,9 +181,15 @@ class Scanner:
             if self.peek() == ".":
                 self.error("Float number can have only one '.'")
 
+            self.add_token(
+                TokenType.NUMBER,
+                literal=float(self.source[self.start: self.current]),
+            )
+            return
+
         self.add_token(
             TokenType.NUMBER,
-            literal=float(self.source[self.start: self.current]),
+            literal=int(self.source[self.start: self.current]),
         )
 
     def identifier(self) -> None:
