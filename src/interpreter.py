@@ -252,18 +252,18 @@ class Interpreter:
 
     @staticmethod
     def check_number_operand(operator, operand):
-        if isinstance(operand, float):
+        if isinstance(operand, (int, float)):
             return
         raise RuntimeError(
-            f"Operand must be a float number. Operator: {operator}"
+            f"Operand must be a number (int | float). Operator: {operator}"
         )
 
     @staticmethod
     def check_number_operands(operator, right, left):
-        if isinstance(left, float) and isinstance(right, float):
+        if isinstance(left, (int, float)) and isinstance(right, (int, float)):
             return
         raise RuntimeError(
-            f"Operands must be a float number. Operator: {operator}"
+            f"Operands must be a number (int | float). Operator: {operator}"
         )
 
     @staticmethod
