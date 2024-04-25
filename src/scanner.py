@@ -1,3 +1,4 @@
+from exceptions import ScannError
 from plox_token import Token
 from token_type import TokenType
 
@@ -151,8 +152,7 @@ class Scanner:
             self.identifier()
 
         else:
-            # Lox.error(self.line, f"Unexpected character: {c}")
-            print(f"Unexpected character: {c}. Line: {self.line}")
+            self.error(f"Unexpected character: {c}.")
 
     def string(self) -> None:
         while self.peek() != '"' and not self.is_at_end():
@@ -162,8 +162,7 @@ class Scanner:
             self.advance()
 
         if self.is_at_end():
-            print(f"Unterminated string. Line: {self.line}")
-            return
+            self.error(f"Unterminated string.")
 
         self.advance()
         string_value = self.source[self.start + 1: self.current - 1]
@@ -179,6 +178,8 @@ class Scanner:
 
             while self.peek().isdigit():
                 self.advance()
+            if self.peek() == ".":
+                self.error("Float number can have only one '.'")
 
         self.add_token(
             TokenType.NUMBER,
@@ -194,3 +195,7 @@ class Scanner:
         token_type = self.keywords.get(text, TokenType.IDENTIFIER)
 
         self.add_token(token_type=token_type)
+
+    def error(self, message: str):
+        message = f"{message} Line: {self.line}"
+        raise ScannError(message)

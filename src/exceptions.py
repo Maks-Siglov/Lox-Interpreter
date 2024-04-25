@@ -1,3 +1,8 @@
+
+class ScannError(RuntimeError):
+    pass
+
+
 class ParserError(RuntimeError):
     pass
 
