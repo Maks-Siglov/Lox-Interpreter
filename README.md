@@ -19,14 +19,14 @@ Lox interpreter provides a convenient way to run Lox programs from the command l
     ```bash
     python lox.py
     ```
-  ***This opens an interactive prompt where you can type Lox commands one at a time. To exit interactive mode, press Ctrl + C.***
+  *This opens an interactive prompt where you can type Lox commands one at a time. To exit interactive mode, press Ctrl + C.*
 
 
 ## Features
 
 ### Supported statements
 
-**Lox supports the following types of statements:***
+Lox supports the following types of statements:
 
 + **Variable Declarations (`var`)**
 + **Function Declarations (`fun`)**
@@ -42,7 +42,7 @@ Lox interpreter provides a convenient way to run Lox programs from the command l
 
 ### Supported Expressions
 
-**Lox supports the following types of expressions:**
+Lox supports the following types of expressions:
 
 + **Assignment Expressions (`=`)**
 + **Logical `OR` and `AND` Expressions (`or`, `and`)**
@@ -56,7 +56,7 @@ Lox interpreter provides a convenient way to run Lox programs from the command l
 
 ### Examples
 
-***Here's an example Lox code that finds Fibonacci numbers up to 20:***
+*Here's an example Lox code that finds Fibonacci numbers up to 20:*
 
 ```bash
 fun fib(n) {
@@ -68,7 +68,7 @@ fun fib(n) {
     }
 ```
 
-***Here's counter function, which store count in var and print it:***
+*Here's counter function, which store count in var and print it:*
 
 ```bash
 fun makeCounter() {
