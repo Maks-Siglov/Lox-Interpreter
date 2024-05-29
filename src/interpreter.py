@@ -45,6 +45,14 @@ class Interpreter:
         self.environment.define_var(statement.name.lexeme, function)
 
     def visit_class_stmt(self, statement: stmt.Class):
+        superclass = None
+        if statement.superclass is not None:
+            superclass = self.evaluate(statement.superclass)
+            if not isinstance(superclass, LoxClass):
+                raise RuntimeError(
+                    statement.superclass.token, "Superclass must be a class."
+                )
+
         self.environment.define_var(statement.name.lexeme, None)
 
         methods = {}
@@ -53,7 +61,7 @@ class Interpreter:
             function = LoxFunction(method, self.environment, is_init)
             methods[method.name.lexeme] = function
 
-        klass = LoxClass(statement.name.lexeme, methods)
+        klass = LoxClass(statement.name.lexeme, superclass, methods)
         self.environment.assign(statement.name, klass)
 
     def visit_print_stmt(self, statement: stmt.Print):

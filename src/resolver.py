@@ -23,11 +23,9 @@ class Resolver:
             self.resolve_statement(statement)
 
     def resolve_statement(self, statement: stmt.Stmt):
-        # print(statement)
         statement.accept(self)
 
     def resolve_expression(self, expression: expr.Expr):
-        # print(expression)
         expression.accept(self)
 
     def begin_scope(self):
@@ -97,6 +95,15 @@ class Resolver:
 
         self.declare(class_stmt.name)
         self.define(class_stmt.name)
+
+        if class_stmt.superclass is not None:
+            if class_stmt.name.lexeme == class_stmt.superclass.token.lexeme:
+                self.error(
+                    class_stmt.superclass.token,
+                    "A class can't inherit from itself."
+                )
+
+            self.resolve_expression(class_stmt.superclass)
 
         self.begin_scope()
         self.scopes[-1]["self"] = True

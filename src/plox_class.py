@@ -1,3 +1,4 @@
+import typing as t
 from enum import Enum
 from typing import TYPE_CHECKING
 
@@ -10,8 +11,14 @@ if TYPE_CHECKING:
 
 
 class LoxClass(PloxCallable):
-    def __init__(self, name: str, methods: [str, LoxFunction]):
+    def __init__(
+            self,
+            name: str,
+            superclass: t.Optional["LoxClass"],
+            methods: [str, LoxFunction]
+    ):
         self.name = name
+        self.superclass = superclass
         self.methods = methods
 
     def call(self, interpreter: "Interpreter", arguments: list):
@@ -26,6 +33,9 @@ class LoxClass(PloxCallable):
     def get_method(self, name: str):
         if name in self.methods:
             return self.methods[name]
+
+        if self.superclass is not None:
+            return self.superclass.get_method(name)
 
     def arity(self):
         initializer = self.get_method("init")

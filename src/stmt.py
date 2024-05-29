@@ -1,3 +1,4 @@
+import expr
 from expr import Expr
 from plox_token import Token
 
@@ -12,7 +13,7 @@ class Stmt:
     VarDecl -> "var" IDENTIFIER ( "=" expression )? ";" ;
     FunDecl -> "fun" Function ;
     Function → IDENTIFIER "(" Parameters? ")" block ;
-    ClassDecl -> "class" IDENTIFIER "{" function* "}" ;
+    ClassDecl -> "class" IDENTIFIER ( "<" IDENTIFIER )? {" function* "}" ;
     Parameters → IDENTIFIER ( "," IDENTIFIER )* ;
     Statement -> ExprStmt
                 | PrintStmt
@@ -110,8 +111,14 @@ class Return(Stmt):
 
 
 class Class(Stmt):
-    def __init__(self, name: Token, methods: list[Function]):
+    def __init__(
+            self,
+            name: Token,
+            superclass: expr.Var | None,
+            methods: list[Function]
+    ):
         self.name = name
+        self.superclass = superclass
         self.methods = methods
 
     def accept(self, visitor):
