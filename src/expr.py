@@ -19,6 +19,7 @@ class Expr:
         |  NUMBER | STRING
         | "(" expression ")"
         | IDENTIFIER ;
+        | "super" "." IDENTIFIER ;
     """
 
     def accept(self, visitor):
@@ -124,3 +125,12 @@ class Self(Expr):
 
     def accept(self, visitor):
         return visitor.visit_self_expr(self)
+
+
+class Super(Expr):
+    def __init__(self, keyword: Token, method: Token):
+        self.keyword = keyword
+        self.method = method
+
+    def accept(self, visitor):
+        return visitor.visit_super_expr(self)

@@ -45,7 +45,19 @@ class Interpreter:
         self.environment.define_var(statement.name.lexeme, function)
 
     def visit_class_stmt(self, statement: stmt.Class):
+        superclass = None
+        if statement.superclass is not None:
+            superclass = self.evaluate(statement.superclass)
+            if not isinstance(superclass, LoxClass):
+                raise RuntimeError(
+                    statement.superclass.token, "Superclass must be a class."
+                )
+
         self.environment.define_var(statement.name.lexeme, None)
+
+        if statement.superclass is not None:
+            self.environment = Environment(enclosing=self.environment)
+            self.environment.define_var("super", superclass)
 
         methods = {}
         for method in statement.methods:
@@ -53,7 +65,11 @@ class Interpreter:
             function = LoxFunction(method, self.environment, is_init)
             methods[method.name.lexeme] = function
 
-        klass = LoxClass(statement.name.lexeme, methods)
+        klass = LoxClass(statement.name.lexeme, superclass, methods)
+
+        if statement.superclass is not None:
+            self.environment = self.environment.enclosing
+
         self.environment.assign(statement.name, klass)
 
     def visit_print_stmt(self, statement: stmt.Print):
@@ -227,6 +243,20 @@ class Interpreter:
         value = self.evaluate(set_expr.value)
         obj.set(set_expr.name, value)
         return value
+
+    def visit_super_expr(self, super_expr: expr.Super):
+        distance = self.locals.get(super_expr)
+        assert distance is not None
+        superclass: LoxClass = self.environment.get_at(distance, "super")
+        instance = self.environment.get_at(distance - 1, "self")
+
+        method = superclass.get_method(super_expr.method.lexeme)
+        if method is None:
+            raise RuntimeError(
+                super_expr.method,
+                f"Undefined property: '{super_expr.method.lexeme}'.",
+            )
+        return method.bind(instance)
 
     def visit_self_expr(self, self_expr: expr.Self):
         return self.look_up_var(self_expr.keyword, self_expr)

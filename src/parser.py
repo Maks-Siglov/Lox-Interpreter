@@ -27,6 +27,14 @@ class Parser:
 
     def class_declaration(self) -> stmt.Stmt:
         name = self.consume(TokenType.IDENTIFIER, "Expect class name.")
+
+        superclass = None
+        if self.match(TokenType.LESS):
+            superclass_token = self.consume(
+                TokenType.IDENTIFIER, "Expect superclass name."
+            )
+            superclass = expr.Var(token=superclass_token)
+
         self.consume(TokenType.LEFT_BRACE, "Expect '{' before class body.")
 
         methods = []
@@ -35,7 +43,7 @@ class Parser:
 
         self.consume(TokenType.RIGHT_BRACE, "Expect '}' after class body.")
 
-        return stmt.Class(name, methods)
+        return stmt.Class(name, superclass, methods)
 
     def fun_declaration(self, kind: str) -> stmt.Function:
         name = self.consume(TokenType.IDENTIFIER, f"Expect {kind} name")
@@ -315,6 +323,14 @@ class Parser:
             self.consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.")
             return expr.Grouping(expression)
 
+        elif self.match(TokenType.SUPER):
+            keyword = self.previous()
+            self.consume(TokenType.DOT, "Expect '.' after 'super'.")
+            method = self.consume(
+                TokenType.IDENTIFIER, "Expect superclass method name."
+            )
+            return expr.Super(keyword, method)
+
         elif self.match(TokenType.SELF):
             return expr.Self(self.previous())
 
@@ -323,13 +339,11 @@ class Parser:
 
         self.error(self.peek(), "Expect expression.")
 
-    def consume(
-        self, token_type: TokenType, message: str
-    ) -> Token | ParserError:
+    def consume(self, token_type: TokenType, message: str) -> Token | None:
         if self.check(token_type):
             return self.advance()
 
-        self.error(self.peek(), message)
+        return self.error(self.peek(), message)
 
     def match(self, token_type: TokenType) -> bool:
         if self.check(token_type):
