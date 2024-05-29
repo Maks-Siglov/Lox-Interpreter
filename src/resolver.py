@@ -103,6 +103,7 @@ class Resolver:
                     "A class can't inherit from itself."
                 )
 
+            self.current_class = ClassType.SUBCLASS
             self.resolve_expression(class_stmt.superclass)
 
             self.begin_scope()
@@ -185,6 +186,16 @@ class Resolver:
         self.resolve_expression(set_expr.expression)
 
     def visit_super_expr(self, super_expr: expr.Super):
+        if self.current_class is ClassType.NONE:
+            self.error(
+                super_expr.keyword, "Can't use 'super' outside of a class."
+            )
+        elif self.current_class != ClassType.SUBCLASS:
+            self.error(
+                super_expr.keyword,
+                "Can't use 'super' in a class with no superclass."
+            )
+
         self.resolve_local(super_expr, super_expr.keyword)
 
     def visit_self_expr(self, self_expr: expr.Self) -> None:
