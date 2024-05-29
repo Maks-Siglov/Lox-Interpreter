@@ -105,6 +105,9 @@ class Resolver:
 
             self.resolve_expression(class_stmt.superclass)
 
+            self.begin_scope()
+            self.scopes[-1]["super"] = True
+
         self.begin_scope()
         self.scopes[-1]["self"] = True
 
@@ -115,9 +118,12 @@ class Resolver:
 
             self.resolve_function(method, declaration)
 
-        self.current_class = enclosing_class
-
         self.end_scope()
+
+        if class_stmt.superclass is not None:
+            self.end_scope()
+
+        self.current_class = enclosing_class
 
     def visit_var_expr(self, expression: expr.Var):
         if (
@@ -177,6 +183,9 @@ class Resolver:
     def visit_set_expr(self, set_expr: expr.Set):
         self.resolve_expression(set_expr.value)
         self.resolve_expression(set_expr.expression)
+
+    def visit_super_expr(self, super_expr: expr.Super):
+        self.resolve_local(super_expr, super_expr.keyword)
 
     def visit_self_expr(self, self_expr: expr.Self) -> None:
         if self.current_class is ClassType.NONE:

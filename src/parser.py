@@ -323,6 +323,14 @@ class Parser:
             self.consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.")
             return expr.Grouping(expression)
 
+        elif self.match(TokenType.SUPER):
+            keyword = self.previous()
+            self.consume(TokenType.DOT, "Expect '.' after 'super'.")
+            method = self.consume(
+                TokenType.IDENTIFIER, "Expect superclass method name."
+            )
+            return expr.Super(keyword, method)
+
         elif self.match(TokenType.SELF):
             return expr.Self(self.previous())
 
