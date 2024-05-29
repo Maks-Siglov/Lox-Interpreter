@@ -112,10 +112,7 @@ class Return(Stmt):
 
 class Class(Stmt):
     def __init__(
-            self,
-            name: Token,
-            superclass: expr.Var | None,
-            methods: list[Function]
+        self, name: Token, superclass: expr.Var | None, methods: list[Function]
     ):
         self.name = name
         self.superclass = superclass

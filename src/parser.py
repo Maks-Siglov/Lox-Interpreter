@@ -339,13 +339,11 @@ class Parser:
 
         self.error(self.peek(), "Expect expression.")
 
-    def consume(
-        self, token_type: TokenType, message: str
-    ) -> Token | ParserError:
+    def consume(self, token_type: TokenType, message: str) -> Token | None:
         if self.check(token_type):
             return self.advance()
 
-        self.error(self.peek(), message)
+        return self.error(self.peek(), message)
 
     def match(self, token_type: TokenType) -> bool:
         if self.check(token_type):

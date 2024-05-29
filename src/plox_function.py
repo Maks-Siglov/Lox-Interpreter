@@ -1,5 +1,5 @@
+import typing as t
 from enum import Enum
-from typing import TYPE_CHECKING, Any
 
 import stmt
 from callable import PloxCallable
@@ -7,7 +7,7 @@ from environment import Environment
 from exceptions import ReturnError
 from plox_instance import LoxInstance
 
-if TYPE_CHECKING:
+if t.TYPE_CHECKING:
     from interpreter import Interpreter
 
 
@@ -22,10 +22,14 @@ class LoxFunction(PloxCallable):
         self.closure = closure
         self.is_initializer = is_initializer
 
-    def arity(self):
+    def arity(self) -> int:
         return len(self.declaration.params)
 
-    def call(self, interpreter: "Interpreter", arguments: list[Any]):
+    def call(
+        self,
+        interpreter: "Interpreter",
+        arguments: list[t.Any],
+    ) -> t.Any:
         environment = Environment(self.closure)
         for i in range(self.arity()):
             parameter_name = self.declaration.params[i].lexeme

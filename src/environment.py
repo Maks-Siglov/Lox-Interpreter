@@ -5,10 +5,10 @@ from plox_token import Token
 
 class Environment:
     def __init__(self, enclosing: t.Optional["Environment"] = None):
-        self.var_values = {}
+        self.var_values: dict = {}
         self.enclosing = enclosing
 
-    def define_var(self, name, value) -> None:
+    def define_var(self, name: str, value: t.Any) -> None:
         self.var_values[name] = value
 
     def get_var(self, name: Token) -> t.Any:

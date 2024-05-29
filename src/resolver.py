@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class Resolver:
     def __init__(self, interpreter: "Interpreter"):
         self.interpreter = interpreter
-        self.scopes = []
+        self.scopes: list[dict[str, bool]] = []
         self.current_function = FunctionType.NONE
         self.current_class = ClassType.NONE
 
@@ -28,7 +28,7 @@ class Resolver:
     def resolve_expression(self, expression: expr.Expr):
         expression.accept(self)
 
-    def begin_scope(self):
+    def begin_scope(self) -> None:
         hash_map: dict[str, bool] = {}
         self.scopes.append(hash_map)
 
@@ -100,7 +100,7 @@ class Resolver:
             if class_stmt.name.lexeme == class_stmt.superclass.token.lexeme:
                 self.error(
                     class_stmt.superclass.token,
-                    "A class can't inherit from itself."
+                    "A class can't inherit from itself.",
                 )
 
             self.current_class = ClassType.SUBCLASS
@@ -193,7 +193,7 @@ class Resolver:
         elif self.current_class != ClassType.SUBCLASS:
             self.error(
                 super_expr.keyword,
-                "Can't use 'super' in a class with no superclass."
+                "Can't use 'super' in a class with no superclass.",
             )
 
         self.resolve_local(super_expr, super_expr.keyword)

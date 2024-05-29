@@ -98,7 +98,7 @@ class Interpreter:
         return None
 
     def execute_block(
-            self, statements: list[stmt.Stmt], environment: Environment
+        self, statements: list[stmt.Stmt], environment: Environment
     ):
         previous = self.environment
         try:
@@ -246,6 +246,7 @@ class Interpreter:
 
     def visit_super_expr(self, super_expr: expr.Super):
         distance = self.locals.get(super_expr)
+        assert distance is not None
         superclass: LoxClass = self.environment.get_at(distance, "super")
         instance = self.environment.get_at(distance - 1, "self")
 
@@ -253,7 +254,7 @@ class Interpreter:
         if method is None:
             raise RuntimeError(
                 super_expr.method,
-                f"Undefined property: '{super_expr.method.lexeme}'."
+                f"Undefined property: '{super_expr.method.lexeme}'.",
             )
         return method.bind(instance)
 

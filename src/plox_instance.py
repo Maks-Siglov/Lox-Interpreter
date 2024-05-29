@@ -3,15 +3,15 @@ from typing import TYPE_CHECKING
 from plox_token import Token
 
 if TYPE_CHECKING:
-    from plox_class import LoxClass
+    from plox_class import LoxClass, LoxFunction
 
 
 class LoxInstance:
     def __init__(self, klass: "LoxClass"):
         self.klass = klass
-        self.fields = {}
+        self.fields: dict = {}
 
-    def get(self, name: Token):
+    def get(self, name: Token) -> "LoxFunction":
         if name.lexeme in self.fields:
             return self.fields[name.lexeme]
 
