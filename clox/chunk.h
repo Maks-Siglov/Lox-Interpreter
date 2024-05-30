@@ -2,6 +2,7 @@
 #define clox_chunk_h
 
 #include "common.h"
+#include "memory.h"
 
 typedef enum {
     OP_RETURN,
@@ -13,11 +14,8 @@ typedef struct {
     uint8_t* code;
 } Chunk;
 
-void initChunk(Chunk* chunk){
-    chunk -> count = 0;
-    chunk -> capacity = 0;
-    chunk -> code = NULL;
-}
-
+void initChunk(Chunk* chunk);
+void freeChunk(Chunk* chunk);
+void writeChunk(Chunk* chunk, uint8_t byte);
 
 #endif
