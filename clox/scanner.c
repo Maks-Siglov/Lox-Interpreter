@@ -12,6 +12,9 @@ static bool match(char expected);
 static void skipWhitespace();
 static char peek();
 static char peekNext();
+static Token string();
+static Token number();
+static bool isDigit(char c);
 
 
 typedef struct {
@@ -38,6 +41,8 @@ Token scanToken(){
     }
 
 	char c = advance();
+	if (isDigit(c)) return number();
+
 	switch (c) {
 		case '(': return makeToken(TOKEN_LEFT_PAREN);
 		case ')': return makeToken(TOKEN_RIGHT_PAREN);
@@ -67,10 +72,35 @@ Token scanToken(){
 			return makeToken(
 				match('=') ? TOKEN_GREATER_EQUAL : TOKEN_GREATER
 			);
+
+		case '"': return string();
 	}
 
     return errorToken("Uexpected character");
 }
+
+static Token string(){
+	while (peek() != '"' && isAtEnd()){
+		if (peek() == '\n') scanner.line++;
+		advance();
+	}
+	if (isAtEnd()) return errorToken("Unterminated string.");
+
+	advance();
+	return makeToken(TOKEN_STRING);
+}
+
+static Token number(){
+	while (isDigit(peek())) advance();
+
+	if (peek() == '.' && isDigit(peekNext())){
+		advance();
+		while (isDigit(peek())) advance();
+	}
+
+	return makeToken(TOKEN_NUMBER);
+}
+
 
 static char advance(){
 	scanner.current++;
@@ -126,6 +156,11 @@ static char peekNext(){
 static char peek(){
 	return *scanner.current;
 }
+
+static bool isDigit(char c){
+	return c >= '0' && c <= '9';
+}
+
 
 static Token makeToken(TokenType type){
     Token token;
