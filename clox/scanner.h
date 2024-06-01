@@ -29,7 +29,7 @@ typedef struct {
     TokenType type;
     const char* start;
     int length;
-    int lien;
+    int line;
 } Token;
 
 void initScanner(const char* source);
