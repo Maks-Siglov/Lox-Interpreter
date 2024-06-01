@@ -16,7 +16,7 @@ static Token string();
 static Token number();
 static bool isDigit(char c);
 static bool isAlpha(char c);
-static Token indentifier();
+static Token identifier();
 static TokenType identifierType();
 static TokenType checkKeyword(int start, int length, const char* rest, TokenType type);
 
@@ -45,7 +45,7 @@ Token scanToken(){
     }
 
 	char c = advance();
-	if (isAlpha(c)) return indentifier();
+	if (isAlpha(c)) return identifier();
 	if (isDigit(c)) return number();
 
 	switch (c) {
@@ -109,7 +109,7 @@ static Token number(){
 }
 
 
-static Token indentifier(){
+static Token identifier(){
 	while (isAlpha(peek()) || isDigit(peek())) advance();
 	return makeToken(identifierType());
 }
