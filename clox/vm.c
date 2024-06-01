@@ -30,7 +30,7 @@ Value pop(){
 }
 
 InterpretResult interpret(const char* source){
-    compile(sourse);
+    compile(source);
     return INTERPRET_OK;
 }
 
