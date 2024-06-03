@@ -82,8 +82,8 @@ static InterpretResult run(){
             case OP_CONSTANT: {
                 Value constant = READ_CONSTANT();
                 push(constant);
-                printValue(constant);
-                printf("\n");
+                //printValue(constant);
+                //printf("\n");
                 break;
             }
             case OP_NIL: push(NIL_VAL); break;
@@ -108,6 +108,7 @@ static InterpretResult run(){
             case OP_DIVIDE: BINARY_OP(NUMBER_VAL, /); break;
 
             case OP_RETURN: {
+                printf("\nReturn: ");
                 printValue(pop());
                 printf("\n");
                 return INTERPRET_OK;
