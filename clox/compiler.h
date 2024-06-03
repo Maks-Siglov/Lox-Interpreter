@@ -40,6 +40,7 @@ static void emitReturn();
 
 static void expression();
 static void number();
+static void string();
 
 static void emitConstant(Value value);
 static uint8_t makeConstant(Value value);
