@@ -26,5 +26,9 @@ static InterpretResult run();
 
 void push(Value value);
 Value pop();
+static Value peek(int distance);
+
+static void runtimeError(const char* format, ...);
+
 
 #endif
