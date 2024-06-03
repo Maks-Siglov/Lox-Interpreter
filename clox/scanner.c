@@ -81,7 +81,7 @@ Token scanToken(){
 		case '"': return string();
 	}
 
-    return errorToken("Uexpected character");
+    return errorToken("Unexpected character");
 }
 
 
