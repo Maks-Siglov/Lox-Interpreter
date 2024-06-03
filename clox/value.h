@@ -29,6 +29,7 @@ void initValueArray(ValueArray* array);
 void writeValueArray(ValueArray* array, Value value);
 void freeValueArray(ValueArray* array);
 void printValue(Value value);
+bool valuesEqual(Value a, Value b);
 
 
 #define IS_BOOL(value) ((value).type == VAL_BOOL)
