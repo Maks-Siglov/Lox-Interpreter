@@ -127,7 +127,7 @@ static InterpretResult run(){
 }
 
 static Value peek(int distance){
-    return vm.stackTop[-1, -distance];
+    return vm.stackTop[-1 - distance];
 }
 
 static bool isFalsey(Value value){
