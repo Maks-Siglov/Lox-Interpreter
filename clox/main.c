@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "common.h"
 #include "vm.h"
+#include "object.h"
+#include "common.h"
 
 static void repl();
 static void runFile(const char* path);

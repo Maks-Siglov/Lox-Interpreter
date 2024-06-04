@@ -18,10 +18,11 @@ static void resetStack(){
 
 void initVM(){
     resetStack();
+	vm.objects = NULL;
 }
 
 void freeVM(){
-
+    freeObjects();
 }
 
 void push(Value value){
