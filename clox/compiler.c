@@ -47,7 +47,7 @@ static void advance(){
 
     for(;;) {
         parser.current = scanToken();
-        // printf("%s №%d \n", getTokenTypeName(parser.current.type), parser.current.type);
+        printf("%s №%d \n", getTokenTypeName(parser.current.type), parser.current.type);
 
         if (parser.current.type != TOKEN_ERROR) break;
 

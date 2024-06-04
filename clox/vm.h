@@ -28,6 +28,8 @@ void push(Value value);
 Value pop();
 static Value peek(int distance);
 
+static void concatenate();
+
 static bool isFalsey(Value value);
 
 static void runtimeError(const char* format, ...);

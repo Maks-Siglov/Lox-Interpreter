@@ -30,6 +30,10 @@ ObjString* copyString(const char* chars, int length);
 static ObjString* allocateString(char* chars, int length);
 static Obj* allocateObject(size_t size, ObjType type);
 
+void printObject(Value value);
+
+ObjString* takeString(char* chars, int length);
+
 static inline bool isObjType(Value value, ObjType type){
     return IS_OBJ(value) && AS_OBJ(value) -> type == type;
 }
