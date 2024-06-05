@@ -39,8 +39,15 @@ static void endCompiler();
 static void emitReturn();
 
 static void expression();
+static void declatration();
+static void statement();
+static void printStatement();
+
 static void number();
 static void string();
+
+static bool match(TokenType type);
+static bool check(TokenType type);
 
 static void emitConstant(Value value);
 static uint8_t makeConstant(Value value);
