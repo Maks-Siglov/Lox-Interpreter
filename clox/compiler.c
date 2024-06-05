@@ -124,7 +124,16 @@ static void declatration(){
 static void statement(){
     if (match(TOKEN_PRINT)) {
         printStatement();
-    }
+    } else {
+		expressionStatement();
+	}
+}
+
+
+static void expressionStatement(){
+    expression();
+    consume(TOKEN_SEMICOLON, "Expect ';' after expression.");
+    emitByte(OP_POP);
 }
 
 

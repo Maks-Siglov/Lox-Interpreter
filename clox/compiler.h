@@ -42,6 +42,7 @@ static void expression();
 static void declatration();
 static void statement();
 static void printStatement();
+static void expressionStatement();
 
 static void number();
 static void string();
