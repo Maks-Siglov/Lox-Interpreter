@@ -20,4 +20,11 @@ typedef struct {
 void initTable(Table* table);
 void freeTable(Table* table);
 
+bool tableSet(Table* table, ObjString* key, Value value);
+bool tableGet(Table* table, ObjString* key, Value* value);
+Entry* findEntry(Entry* entries, int capacity, ObjString* key);
+
+static void adjustCapacity(Table* table, int capacity);
+void tableAddAll(Table* from, Table* to);
+
 #endif
