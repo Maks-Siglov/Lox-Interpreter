@@ -43,9 +43,16 @@ static void declatration();
 static void statement();
 static void printStatement();
 static void expressionStatement();
+static void varDeclaration();
+static uint8_t parseVariable(const char* errorMessage);
+static uint8_t identifierConstant(Token* name);
+static void defineVariable(uint8_t global);
+
 
 static void number();
 static void string();
+static void variable();
+static void namedVariable(Token name);
 
 static bool match(TokenType type);
 static bool check(TokenType type);
@@ -61,6 +68,7 @@ static void literal();
 static void parsePrecedence(Precedence precedence);
 static ParseRule* getRule(TokenType type);
 
+static void synchronize();
 static void errorAtCurrent(const char* message);
 static void error(const char* message);
 static void errorAt(Token* token, const char* message);
