@@ -18,7 +18,8 @@ typedef enum {
     PREC_PRIMARY
 } Precedence;
 
-typedef void (*ParseFn)();
+
+typedef void (*ParseFn)(bool canAssign);
 
 typedef struct {
     ParseFn prefix;
@@ -49,10 +50,10 @@ static uint8_t identifierConstant(Token* name);
 static void defineVariable(uint8_t global);
 
 
-static void number();
-static void string();
-static void variable();
-static void namedVariable(Token name);
+static void number(bool canAssign);
+static void string(bool canAssign);
+static void variable(bool canAssign);
+static void namedVariable(Token name, bool canAssign);
 
 static bool match(TokenType type);
 static bool check(TokenType type);
@@ -60,10 +61,10 @@ static bool check(TokenType type);
 static void emitConstant(Value value);
 static uint8_t makeConstant(Value value);
 
-static void grouping();
-static void unary();
-static void binary();
-static void literal();
+static void grouping(bool canAssign);
+static void unary(bool canAssign);
+static void binary(bool canAssign);
+static void literal(bool canAssign);
 
 static void parsePrecedence(Precedence precedence);
 static ParseRule* getRule(TokenType type);
