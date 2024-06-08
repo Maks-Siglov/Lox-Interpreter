@@ -55,8 +55,11 @@ static void emitReturn();
 static void expression();
 static void declaration();
 static void statement();
+
 static void printStatement();
 static void expressionStatement();
+static void ifStatement()
+
 static void block();
 static void beginScope();
 static void endScope();
@@ -83,6 +86,9 @@ static bool check(TokenType type);
 
 static void emitConstant(Value value);
 static uint8_t makeConstant(Value value);
+static int emitJump(uint8_t instruction)
+
+static void patchJump(int offset);
 
 static void grouping(bool canAssign);
 static void unary(bool canAssign);
