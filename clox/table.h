@@ -27,7 +27,6 @@ Entry* findEntry(Entry* entries, int capacity, ObjString* key);
 
 ObjString* tableFindString(Table* table, const char* chars, int length, uint32_t hash);
 
-static void adjustCapacity(Table* table, int capacity);
 void tableAddAll(Table* from, Table* to);
 
 #endif

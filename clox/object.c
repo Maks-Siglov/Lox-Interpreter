@@ -7,6 +7,12 @@
 #include "value.h"
 #include "vm.h"
 
+
+static ObjString* allocateString(char* chars, int length, uint32_t hash);
+static Obj* allocateObject(size_t size, ObjType type);
+static uint32_t hashString(const char* key, int length);
+
+
 #define ALLOCATE_OBJ(type, objectType) \
     (type*)allocateObject(sizeof(type), objectType)
 

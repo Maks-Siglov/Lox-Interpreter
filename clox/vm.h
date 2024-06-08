@@ -31,17 +31,9 @@ extern VM vm;
 void initVM();
 void freeVM();
 InterpretResult interpret(const char* source);
-static InterpretResult run();
 
-void push(Value value);
 Value pop();
-static Value peek(int distance);
-
-static void concatenate();
-
-static bool isFalsey(Value value);
-
-static void runtimeError(const char* format, ...);
+void push(Value value);
 
 
 #endif

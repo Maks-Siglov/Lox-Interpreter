@@ -30,14 +30,9 @@ struct ObjString {
 
 
 ObjString* copyString(const char* chars, int length);
-static ObjString* allocateString(char* chars, int length, uint32_t hash);
-static Obj* allocateObject(size_t size, ObjType type);
-
-void printObject(Value value);
-
 ObjString* takeString(char* chars, int length);
 
-static uint32_t hashString(const char* key, int length);
+void printObject(Value value);
 
 static inline bool isObjType(Value value, ObjType type){
     return IS_OBJ(value) && AS_OBJ(value) -> type == type;

@@ -10,6 +10,13 @@
 #include "memory.h"
 
 
+static InterpretResult run();
+static Value peek(int distance);
+static void concatenate();
+static bool isFalsey(Value value);
+static void runtimeError(const char* format, ...);
+
+
 VM vm;
 
 static void resetStack(){
