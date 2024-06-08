@@ -102,7 +102,7 @@ static void patchJump(int offset){
     }
 
     currentChunk()->code[offset] = (jump >> 8) & 0xff;
-    currentChunk()->code[offset + 1] = jump & 0xf;
+    currentChunk()->code[offset + 1] = jump & 0xff;
 }
 
 
@@ -170,7 +170,7 @@ static uint8_t parseVariable(const char* errorMessage){
 static void declareVariable(){
     if (current->scopeDepth == 0) return;
     Token* name = &parser.previous;
-    for (int i = current->localCount; i >= 0; i--){
+    for (int i = current->localCount-1; i >= 0; i--){
         Local* local = &current->locals[i];
         if (local->depth != - 1 && local->depth < current->scopeDepth) {
             break;
@@ -280,12 +280,32 @@ static void ifStatement() {
     patchJump(thenJump);
 	emitByte(OP_POP);
 
-	if (match(TOKEN_ELSE)) {
-	    statement();
-	    patchJump(elseJump);
-	}
+	if (match(TOKEN_ELSE)) statement();
+	patchJump(elseJump);
+
 }
 
+
+static void and_(bool canAssign){
+    int endJump = emitJump(OP_JUMP_IF_FALSE);
+
+    emitByte(OP_POP);
+    parsePrecedence(PREC_AND);
+
+    patchJump(endJump);
+}
+
+
+static void or_(bool canAssign){
+    int elseJump = emitJump(OP_JUMP_IF_FALSE);
+    int endJump = emitJump(OP_JUMP);
+
+    patchJump(elseJump);
+    emitByte(OP_POP);
+
+    parsePrecedence(PREC_OR);
+    patchJump(endJump);
+}
 
 static void block(){
     while (!check(TOKEN_RIGHT_BRACE) && !check(TOKEN_EOF)) {
@@ -482,7 +502,7 @@ ParseRule rules[] = {
     [TOKEN_IDENTIFIER] = {variable, NULL, PREC_NONE},
     [TOKEN_STRING] = {string, NULL, PREC_NONE},
     [TOKEN_NUMBER] = {number, NULL, PREC_NONE},
-    [TOKEN_AND] = {NULL, NULL, PREC_NONE},
+    [TOKEN_AND] = {NULL, and_, PREC_AND},
     [TOKEN_CLASS] = {NULL, NULL, PREC_NONE},
     [TOKEN_ELSE] = {NULL, NULL, PREC_NONE},
     [TOKEN_FALSE] = {literal, NULL, PREC_NONE},
@@ -490,7 +510,7 @@ ParseRule rules[] = {
     [TOKEN_FUN] = {NULL, NULL, PREC_NONE},
     [TOKEN_IF] = {NULL, NULL, PREC_NONE},
     [TOKEN_NIL] = {literal, NULL, PREC_NONE},
-    [TOKEN_OR] = {NULL, NULL, PREC_NONE},
+    [TOKEN_OR] = {NULL, or_, PREC_OR},
     [TOKEN_PRINT] = {NULL, NULL, PREC_NONE},
     [TOKEN_RETURN] = {NULL, NULL, PREC_NONE},
     [TOKEN_SUPER] = {NULL, NULL, PREC_NONE},

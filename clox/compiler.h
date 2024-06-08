@@ -58,7 +58,15 @@ static void statement();
 
 static void printStatement();
 static void expressionStatement();
-static void ifStatement()
+static void ifStatement();
+
+static void and_(bool canAssign);
+static void or_(bool canAssign);
+
+static void grouping(bool canAssign);
+static void unary(bool canAssign);
+static void binary(bool canAssign);
+static void literal(bool canAssign);
 
 static void block();
 static void beginScope();
@@ -86,14 +94,9 @@ static bool check(TokenType type);
 
 static void emitConstant(Value value);
 static uint8_t makeConstant(Value value);
-static int emitJump(uint8_t instruction)
+static int emitJump(uint8_t instruction);
 
 static void patchJump(int offset);
-
-static void grouping(bool canAssign);
-static void unary(bool canAssign);
-static void binary(bool canAssign);
-static void literal(bool canAssign);
 
 static void parsePrecedence(Precedence precedence);
 static ParseRule* getRule(TokenType type);
